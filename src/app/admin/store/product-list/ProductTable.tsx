@@ -1,0 +1,179 @@
+"use client";
+
+import { useEffect, useState, useCallback } from "react";
+import { Table, Select, Button, message, Popconfirm } from "antd";
+import axios from "axios";
+import { PlusOutlined } from "@ant-design/icons";
+import toast from "react-hot-toast";
+import AddNewModelModal from "@/components/AddModelModal";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import { FormatDate } from "@/components/dateFormate";
+import { useRouter } from "next/navigation";
+
+const ProductLust = () => {
+  const token = localStorage.getItem("admin-x-token");
+  const [variants, setVariants] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(1);
+  const [categories, setCategories] = useState<any[]>([]);
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/categories/getAll`
+        );
+        setCategories(res.data.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/products/getAll?category_id=${selectedCategory}&is_store_product=true`
+      );
+      setVariants(res.data.data);
+    } catch (error) {
+      console.error("Error fetching conditions:", error);
+      toast.error("Failed to load conditions.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchProducts();
+  }, [selectedCategory]);
+
+  // Table Columns for Models
+  const modelColumns = [
+    {
+      title: "S.No",
+      dataIndex: "sno",
+      key: "sno",
+      // @ts-expect-error jk jk
+      render: (_, __, index) => index + 1,
+    },
+    {
+      title: "Image",
+      dataIndex: "images",
+      key: "name",
+      // @ts-expect-error jh kj
+      render: (text, record) => (
+        <Image
+          src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${text[0]?.image_url}`}
+          alt="Brand Logo"
+          width={50}
+          height={50}
+        />
+      ),
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      // @ts-expect-error jh kj
+      render: (_, record) => <p>{record.name.slice(0, 30)}...</p>,
+    },
+
+    {
+      title: "Description",
+      dataIndex: "description",
+      key: "description",
+      // @ts-expect-error jh kj
+      render: (_, record) => <p>{record.description.slice(0, 30)}...</p>,
+    },
+    {
+      title: "Category",
+      dataIndex: "category",
+      key: "category",
+    },
+    {
+      title: "Posted At",
+      dataIndex: "created_at",
+      key: "created_at",
+      // @ts-expect-error jh kj
+      render: (_, record) => <p>{FormatDate(_)}</p>,
+    },
+    {
+      title: "Posted By",
+      dataIndex: "created_by",
+      key: "created_by",
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      // @ts-expect-error jk jk
+      render: (_, record) => (
+        <div className="flex gap-2">
+        <Button
+          onClick={() => router.push(`/admin/product-list/viewdetail/${record.id}`)}
+          className="bg-custom-gradient text-white"
+        >
+          View Details
+        </Button>
+        <Button
+          onClick={() => router.push(`/admin/store/product-list/edit/${record.id}`)}
+          className="bg-custom-gradient text-white"
+        >
+          Edit
+        </Button>
+      </div>
+        // <Button
+        //   onClick={() =>
+        //     router.push(`/admin/product-list/viewdetail/${record.id}`)
+        //   }
+        //   className="bg-custom-gradient text-white"
+        // >
+        //   View Details
+        // </Button>
+      ),
+    },
+  ];
+  const handleCategoryChange = (categoryId: number) => {
+    setSelectedCategory(categoryId);
+  };
+  return (
+    <div className="p-6 bg-white shadow-md rounded-lg">
+      <h2 className="text-2xl font-semibold mb-4">Store Products Management</h2>
+      <div className="mb-4 flex gap-4">
+        <Select
+          placeholder="Select Category"
+          className="w-1/3"
+          onChange={handleCategoryChange}
+          value={selectedCategory ?? undefined}
+          loading={loading}
+        >
+          {categories.map((category) => (
+            <Select.Option key={category.id} value={category.id}>
+              {category.name}
+            </Select.Option>
+          ))}
+        </Select>
+      </div>
+
+      {/* Models Table */}
+      <Table
+        dataSource={variants}
+        columns={modelColumns}
+        loading={loading}
+        rowKey="id"
+        pagination={{ pageSize: 10 }}
+        bordered
+      />
+
+      {/* <AddConditionModal
+        fetch={fetchVaraints}
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+      /> */}
+    </div>
+  );
+};
+
+export default dynamic(() => Promise.resolve(ProductLust), { ssr: false });

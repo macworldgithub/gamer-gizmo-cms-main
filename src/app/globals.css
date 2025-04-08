@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.ant-card .ant-card-body {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+.custom-table .ant-table-tbody > tr > td {
+  color: #817b7d;
+}
+
+.custom-table .ant-table-thead > tr > th {
+  color: #817b7d;
+}
+
+.custom-table .ant-table {
+  margin: "0px";
+  padding: 0;
+}
+
+.custom-table .ant-table-wrapper .ant-table-container {
+  background-color: rebeccapurple;
+}
+
+:root {
+  --neon-blue: #00eaff;
+  --neon-purple: #7b2ff7;
+  --dark-bg: #0a0a0a;
+  --input-bg: #1a1a1a;
+  --text-color: #ffffff;
+  --border-radius: 8px;
+}
+
+/* body {
+  background-color: var(--dark-bg);
+  color: var(--text-color);
+  font-family: "Poppins", sans-serif;
+} */
+
+.shadow-neon-purple {
+  box-shadow: 0 0 10px var(--neon-purple), 0 0 40px var(--neon-purple);
+}
+
+.border-neon-blue {
+  border: 2px solid var(--neon-blue);
+}
+
+input {
+  background-color: var(--input-bg);
+  color: var(--text-color);
+  border: 2px solid var(--neon-blue);
+  padding: 12px;
+  border-radius: var(--border-radius);
+  outline: none;
+}
+
+input:focus {
+  border-color: var(--neon-purple);
+  box-shadow: 0 0 8px var(--neon-purple);
+}
+
+.stylishbutton {
+  background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
+  padding: 12px;
+  border: none;
+  border-radius: var(--border-radius);
+  color: var(--text-color);
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.stylishbutton:hover {
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+  box-shadow: 0 0 12px var(--neon-blue);
+}
