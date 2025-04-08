@@ -75,3 +75,18 @@ input:focus {
   background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
   box-shadow: 0 0 12px var(--neon-blue);
 }
+
+.custom-steps .ant-steps-item-title {
+  text-align: left;
+  white-space: normal;
+  font-size: 12px; 
+  width: 40%;
+  line-height: 0%;
+}
+
+:where(.css-dev-only-do-not-override-nqoqt9).ant-steps .ant-steps-item-title {
+  line-height: 16px;
+}
+:where(.css-dev-only-do-not-override-nqoqt9).ant-steps .ant-steps-item-title::after {
+  width:0;
+}

@@ -297,14 +297,14 @@ const StepperForm: React.FC = () => {
   return (
     <div className="flex justify-center items-center w-full">
       <div className="w-[90%] mx-auto p-6 mt-4 bg-white shadow-lg rounded-lg">
-        <Steps current={current} className="mb-6">
-          <Step title="Select Category" />
-          <Step title="Product Details" />
-          <Step title="More Specification" />
-          <Step title="Set Price" />
-          <Step title="Upload Images" />
-          <Step title="Review Section" />
-        </Steps>
+      <Steps current={current} className="mb-6 custom-steps" responsive={false}>
+  <Step title={<span>Category<br />Selection</span>} />
+  <Step title={<span>Product<br />Details</span>} />
+  <Step title={<span>More<br />Specifications</span>} />
+  <Step title={<span>Set<br />Price</span>} />
+  <Step title={<span>Upload<br />Images</span>} />
+  <Step title={<span>Review<br />Section</span>} />
+</Steps>
 
         {current === 0 && (
           <CategoryStep

@@ -10,7 +10,7 @@ const DeleteButton = ({ onDelete }: { onDelete: () => void }) => {
   };
 
   const handleOk = () => {
-    onDelete(); // Call the delete function
+    onDelete(); 
     setIsModalVisible(false);
   };
 
