@@ -279,6 +279,14 @@ const SideBar = () => {
       label: "Components",
       onClick: () => handleNavigation("/admin/components"),
     },
+
+    {
+      key: "Adds",
+      icon: <LuComponent size={18}/>,
+      // icon: <Image src={category} alt="Categories" width={24} height={24} />,
+      label: "Adds",
+      onClick: () => handleNavigation("/admin/Adds"),
+    },
     {
       key: "3",
       icon: <TbBrandSketch size={18}/>,
