@@ -1,80 +1,124 @@
-'use client';
+"use client";
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from "react";
+import Image from "next/image";
+import axios from "axios";
 
-interface ImageItem {
+interface ImageType {
   id: number;
   src: string;
-  file: File;
 }
 
-type Category = 'Laptops' | 'Desktops' | 'Gaming' | 'Accessories';
-
 const AddsPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
-  const [categoryImages, setCategoryImages] = useState<Record<Category, ImageItem[]>>({
-    Laptops: [],
-    Desktops: [],
-    Gaming: [],
-    Accessories: [],
-  });
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const categories = ["Laptops", "Desktops", "Gaming", "Accessories"];
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [categoryImages, setCategoryImages] = useState<
+    Record<string, ImageType[]>
+  >({});
   const [updateId, setUpdateId] = useState<number | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleCategorySelect = (category: Category) => {
+  const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
+    if (!categoryImages[category]) {
+      setCategoryImages((prev) => ({ ...prev, [category]: [] }));
+    }
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!selectedCategory) return;
-
     const files = e.target.files;
     if (!files) return;
 
-    const existing = categoryImages[selectedCategory];
-    const newImages = Array.from(files).slice(0, 4 - existing.length).map((file, index) => ({
-      id: Date.now() + index,
-      src: URL.createObjectURL(file),
-      file,
-    }));
+    const existing = categoryImages[selectedCategory] || [];
+    const newImages: ImageType[] = [];
+    const startingId = existing.length + 1;
+
+    const validFiles = Array.from(files).slice(0, 4 - existing.length);
+
+    for (const [index, file] of validFiles.entries()) {
+      const newId = startingId + index;
+      const imageUrl = URL.createObjectURL(file);
+      newImages.push({ id: newId, src: imageUrl });
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("ad_id", String(newId));
+      formData.append("page", selectedCategory);
+      formData.append("price", "0");
+      formData.append("start_date", new Date().toISOString());
+      formData.append("end_date", new Date().toISOString());
+
+      try {
+        await axios.post(
+          "http://localhost:4009/ads/create-or-update-or-delete",
+          formData
+        );
+      } catch (err) {
+        console.error("Upload failed:", err);
+      }
+    }
 
     setCategoryImages((prev) => ({
       ...prev,
-      [selectedCategory]: [...prev[selectedCategory], ...newImages],
+      [selectedCategory]: [...existing, ...newImages],
     }));
 
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const handleUpdateTrigger = (id: number) => {
-    setUpdateId(id);
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
-  const handleUpdateFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!selectedCategory) return;
+  const handleUpdateFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!selectedCategory || updateId === null) return;
     const file = e.target.files?.[0];
-    if (!file || updateId === null) return;
+    if (!file) return;
+
+    const imageUrl = URL.createObjectURL(file);
+    const updatedImages = categoryImages[selectedCategory].map((img) =>
+      img.id === updateId ? { ...img, src: imageUrl } : img
+    );
+
+    const formData = new FormData();
+    formData.append("image", file);
+    formData.append("ad_id", String(updateId));
+    formData.append("page", selectedCategory);
+    formData.append("price", "0");
+    formData.append("start_date", new Date().toISOString());
+    formData.append("end_date", new Date().toISOString());
+
+    try {
+      await axios.post(
+        "http://localhost:4009/ads/create-or-update-or-delete",
+        formData
+      );
+    } catch (err) {
+      console.error("Update failed:", err);
+    }
 
     setCategoryImages((prev) => ({
       ...prev,
-      [selectedCategory]: prev[selectedCategory].map((img) =>
-        img.id === updateId ? { ...img, src: URL.createObjectURL(file), file } : img
-      ),
+      [selectedCategory]: updatedImages,
     }));
 
     setUpdateId(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
-    }
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     if (!selectedCategory) return;
+
+    const formData = new FormData();
+    formData.append("ad_id", String(id));
+    formData.append("page", selectedCategory);
+
+    try {
+      await axios.post(
+        "http://localhost:4009/ads/create-or-update-or-delete",
+        formData
+      );
+    } catch (err) {
+      console.error("Delete failed:", err);
+    }
+
     setCategoryImages((prev) => ({
       ...prev,
       [selectedCategory]: prev[selectedCategory].filter((img) => img.id !== id),
@@ -82,74 +126,83 @@ const AddsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6 text-gray-800">
-      <h1 className="text-2xl font-bold mb-6">Manage Ads Images</h1>
-
-      <div className="mb-6">
-        {(['Laptops', 'Desktops', 'Gaming', 'Accessories'] as Category[]).map((cat) => (
+    <div className="flex flex-col items-center p-4">
+      <h1 className="text-2xl font-bold mb-4">Category Selection</h1>
+      <div className="flex flex-wrap gap-4 justify-center mb-6">
+        {categories.map((category) => (
           <button
-            key={cat}
-            className={`mr-4 ${selectedCategory === cat ? 'bg-blue-600' : 'bg-gray-300'} text-white py-2 px-4 rounded`}
-            onClick={() => handleCategorySelect(cat)}
+            key={category}
+            onClick={() => handleCategorySelect(category)}
+            className={`px-4 py-2 rounded ${
+              selectedCategory === category
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200"
+            }`}
           >
-            {cat}
+            {category}
           </button>
         ))}
       </div>
 
       {selectedCategory && (
-        <div>
-          <h2 className="text-xl mb-4">{selectedCategory} Ads</h2>
-          {categoryImages[selectedCategory].length < 4 && (
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageUpload}
-              className="mb-4"
-            />
-          )}
-
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={updateId !== null ? handleUpdateFile : handleImageUpload}
-          />
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            {categoryImages[selectedCategory].map((img) => (
+        <div className="w-full max-w-4xl">
+          <h2 className="text-xl font-semibold mb-2">
+            {selectedCategory} Images
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+            {categoryImages[selectedCategory]?.map((image) => (
               <div
-                key={img.id}
-                className="bg-white p-4 rounded shadow flex flex-col items-center space-y-3"
+                key={image.id}
+                className="relative group border rounded overflow-hidden"
               >
-                <img
-                  src={img.src}
-                  alt="Uploaded"
-                  className="w-full h-40 object-cover rounded"
+                <Image
+                  src={image.src}
+                  alt="Ad"
+                  width={200}
+                  height={200}
+                  className="w-full h-auto"
                 />
-                <div className="flex gap-2">
+                <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
-                    className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
-                    onClick={() => handleUpdateTrigger(img.id)}
+                    onClick={() => {
+                      setUpdateId(image.id);
+                      fileInputRef.current?.click();
+                    }}
+                    className="bg-yellow-500 text-white px-2 py-1 rounded"
                   >
                     Update
                   </button>
-                  {(img.src || img.file) && (
-                    <button
-                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                      onClick={() => handleDelete(img.id)}
-                    >
-                      Delete
-                    </button>
-                  )}
+                  <button
+                    onClick={() => handleDelete(image.id)}
+                    className="bg-red-500 text-white px-2 py-1 rounded"
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
             ))}
           </div>
+
+          {/* 👇 Only show "Choose File" if less than 4 images */}
+          {categoryImages[selectedCategory]?.length < 4 && (
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="mb-4"
+            />
+          )}
         </div>
       )}
+
+      <input
+        type="file"
+        accept="image/*"
+        ref={fileInputRef}
+        style={{ display: "none" }}
+        onChange={handleUpdateFile}
+      />
     </div>
   );
 };
