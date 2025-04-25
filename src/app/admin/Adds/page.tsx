@@ -10,7 +10,16 @@ interface ImageType {
 }
 
 const AddsPage = () => {
-  const categories = ["Laptops", "Desktops", "Gaming", "Accessories"];
+  const categories = [
+    "Home",
+    "Laptops",
+    "Desktops",
+    "Gaming",
+    "Accessories",
+    "Blogs",
+    "About Us",
+    "Contact Us",
+  ];
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [categoryImages, setCategoryImages] = useState<
     Record<string, ImageType[]>
