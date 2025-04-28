@@ -1,9 +1,9 @@
-"use client"
+"use client";
 import React from "react";
 import RootHeader from "./header";
 import SideBar from "./sidebar";
-import {  Layout } from "antd";
-import { Content} from "antd/es/layout/layout";
+import { Layout } from "antd";
+import { Content } from "antd/es/layout/layout";
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <Layout>
