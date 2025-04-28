@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import axios from "axios";
 
@@ -21,11 +21,22 @@ const AddsPage = () => {
     "Contact Us",
   ];
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [categoryImages, setCategoryImages] = useState<
-    Record<string, ImageType[]>
-  >({});
+  const [categoryImages, setCategoryImages] = useState<Record<string, ImageType[]>>({});
   const [updateId, setUpdateId] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // 👉 Load images from localStorage when page loads
+  useEffect(() => {
+    const storedImages = localStorage.getItem("categoryImages");
+    if (storedImages) {
+      setCategoryImages(JSON.parse(storedImages));
+    }
+  }, []);
+
+  // 👉 Save images to localStorage whenever categoryImages changes
+  useEffect(() => {
+    localStorage.setItem("categoryImages", JSON.stringify(categoryImages));
+  }, [categoryImages]);
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category);
