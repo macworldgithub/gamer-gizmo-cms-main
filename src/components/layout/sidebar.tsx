@@ -156,6 +156,7 @@ import { BsBoxes, BsGpuCard } from "react-icons/bs";
 import { GiProcessor } from "react-icons/gi";
 import { IoSettingsOutline } from "react-icons/io5";
 import { CiLocationOn } from "react-icons/ci";
+import { RxCardStackPlus } from "react-icons/rx";
 // import ClientSideBar from "../another_folder/ClientSideBar";
 
 // const items2: MenuProps["items"] = [
@@ -291,9 +292,9 @@ const SideBar = () => {
 
     {
       key: "Adds",
-      icon: <LuComponent size={18}/>,
-      // icon: <Image src={category} alt="Categories" width={24} height={24} />,
-      label: "Adds",
+      icon: <RxCardStackPlus size={18} />,
+
+      label: "Live Ads",
       onClick: () => handleNavigation("/admin/Adds"),
     },
     {

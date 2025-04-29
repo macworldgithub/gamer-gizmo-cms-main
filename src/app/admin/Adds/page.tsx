@@ -246,6 +246,10 @@ const AddsPage = () => {
     "Gaming PCS",
     "Gaming Consoles",
     "Components and Accessories",
+    "Popular Laptops",
+    "Popular Gaming PCS",
+    "Popular Gaming Consoles",
+    "Popular Components and Accessoriesming PCS",
     "Blogs",
     // "About Us",
     "Contact Us",
@@ -344,7 +348,7 @@ const AddsPage = () => {
     );
 
     const formData = new FormData();
-    formData.append("image", file);
+    formData.append("file", file);
     formData.append("ad_id", String(updateId));
     formData.append("page", selectedCategory);
     formData.append("price", "0");
@@ -354,7 +358,12 @@ const AddsPage = () => {
     try {
       await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/ads/create-or-update-or-delete`,
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
     } catch (err) {
       console.error("Update failed:", err);
@@ -445,7 +454,7 @@ const AddsPage = () => {
                       className="w-full h-auto"
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button
+                      {/* <button
                         onClick={() => {
                           setUpdateId(image.id);
                           fileInputRef.current?.click();
@@ -453,7 +462,7 @@ const AddsPage = () => {
                         className="bg-yellow-500 text-white px-2 py-1 rounded"
                       >
                         Update
-                      </button>
+                      </button> */}
                       <button
                         //@ts-ignore
                         onClick={() => handleDelete(image.ad_id)}
