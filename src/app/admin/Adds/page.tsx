@@ -243,44 +243,52 @@ const AddsPage = () => {
   const categories = [
     "Home",
     "Laptops",
-    "Desktops",
-    "Gaming",
-    "Accessories",
+    "Gaming PCS",
+    "Gaming Consoles",
+    "Components and Accessories",
     "Blogs",
-    "About Us",
+    // "About Us",
     "Contact Us",
+    "Store",
   ];
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("Home");
   const [categoryImages, setCategoryImages] = useState<
     Record<string, ImageType[]>
   >({});
   const [updateId, setUpdateId] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleCategorySelect = async (category: any) => {
+  const fetchCategoryImages = async (category: string) => {
     try {
-      setSelectedCategory(category);
-
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/ads/fetch`,
         {
           params: {
-            page: category, // 👈 Pass the category name as query param
+            page: category,
           },
         }
       );
-
       // Assuming response.data is an array of images
       setCategoryImages((prev) => ({
         ...prev,
         [category]: response.data.map((img: any) => ({
           id: img.id,
-          src: `${process.env.NEXT_PUBLIC_API_BASE_URL}${img.url}`, // complete URL
+          ad_id: img.ad_id,
+          src: `${process.env.NEXT_PUBLIC_API_BASE_URL}${img.url}`,
         })),
       }));
     } catch (error) {
       console.error("Error fetching category images:", error);
     }
+  };
+  useEffect(() => {
+    fetchCategoryImages("Home");
+  }, []);
+
+  const handleCategorySelect = async (category: string) => {
+    // Set active tab and fetch images for that category.
+    setSelectedCategory(category);
+    await fetchCategoryImages(category);
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -316,11 +324,11 @@ const AddsPage = () => {
         console.error("Upload failed:", err);
       }
     }
-
-    setCategoryImages((prev) => ({
-      ...prev,
-      [selectedCategory]: [...existing, ...newImages],
-    }));
+    await fetchCategoryImages(selectedCategory);
+    // setCategoryImages((prev) => ({
+    //   ...prev,
+    //   [selectedCategory]: [...existing, ...newImages],
+    // }));
 
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
@@ -352,37 +360,14 @@ const AddsPage = () => {
       console.error("Update failed:", err);
     }
 
-    setCategoryImages((prev) => ({
-      ...prev,
-      [selectedCategory]: updatedImages,
-    }));
-
+    // setCategoryImages((prev) => ({
+    //   ...prev,
+    //   [selectedCategory]: updatedImages,
+    // }));
+    await fetchCategoryImages(selectedCategory);
     setUpdateId(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
-
-  // const handleDelete = async (id: number) => {
-  //   if (!selectedCategory) return;
-
-  //   const formData = new FormData();
-  //   formData.append("ad_id", String(id));
-  //   formData.append("page", selectedCategory);
-
-  //   try {
-  //     await axios.post(
-  //       `${process.env.NEXT_PUBLIC_API_BASE_URL}/ads/create-or-update-or-delete`,
-  //       formData
-  //     );
-  //   } catch (err) {
-  //     console.error("Delete failed:", err);
-  //   }
-
-  //   setCategoryImages((prev) => ({
-  //     ...prev,
-  //     [selectedCategory]: prev[selectedCategory].filter((img) => img.id !== id),
-  //   }));
-  //   console.log(id, "my idddd");
-  // };
 
   const handleDelete = async (id: number) => {
     if (!selectedCategory) return;
@@ -401,9 +386,16 @@ const AddsPage = () => {
     try {
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/ads/create-or-update-or-delete`,
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // Required for FormData
+          },
+        }
       );
-      // Process response here
+
+      console.log("Delete response:", response.data);
+      await fetchCategoryImages(selectedCategory);
     } catch (err) {
       console.error("Delete failed:", err);
     }
@@ -421,7 +413,7 @@ const AddsPage = () => {
             onClick={() => handleCategorySelect(category)}
             className={`px-4 py-2 rounded ${
               selectedCategory === category
-                ? "bg-blue-500 text-white"
+                ? "bg-custom-gradient text-white"
                 : "bg-gray-200"
             }`}
           >
@@ -438,40 +430,43 @@ const AddsPage = () => {
           </h2>
           {categoryImages[selectedCategory]?.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-              {categoryImages[selectedCategory]?.map((image) => (
-                <div
-                  key={image.id}
-                  className="relative group border rounded overflow-hidden"
-                >
-                  <Image
-                    src={image.src}
-                    alt="Ad"
-                    width={200}
-                    height={200}
-                    className="w-full h-auto"
-                  />
-                  <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button
-                      onClick={() => {
-                        setUpdateId(image.id);
-                        fileInputRef.current?.click();
-                      }}
-                      className="bg-yellow-500 text-white px-2 py-1 rounded"
-                    >
-                      Update
-                    </button>
-                    <button
-                      onClick={() => handleDelete(image.id)}
-                      className="bg-red-500 text-white px-2 py-1 rounded"
-                    >
-                      Delete
-                    </button>
+              {categoryImages[selectedCategory]?.map((image) => {
+                console.log("Image object:", image);
+                return (
+                  <div
+                    key={image.id}
+                    className="relative group border rounded overflow-hidden"
+                  >
+                    <Image
+                      src={image.src}
+                      alt="Ad"
+                      width={200}
+                      height={200}
+                      className="w-full h-auto"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        onClick={() => {
+                          setUpdateId(image.id);
+                          fileInputRef.current?.click();
+                        }}
+                        className="bg-yellow-500 text-white px-2 py-1 rounded"
+                      >
+                        Update
+                      </button>
+                      <button
+                        //@ts-ignore
+                        onClick={() => handleDelete(image.ad_id)}
+                        className="bg-red-500 text-white px-2 py-1 rounded"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
-            // 👇 Show this if no images
             <div className="text-center text-red-500 my-8">
               No images found. Please upload.
             </div>
