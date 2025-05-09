@@ -145,7 +145,6 @@
 
 // export default ProductList;
 
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -186,7 +185,9 @@ const ProductList = () => {
 
         // Retrieve and set selected category from localStorage
         const savedCategory = localStorage.getItem("selectedCategory");
-        const defaultCategory = savedCategory ? Number(savedCategory) : res.data.data[0]?.id;
+        const defaultCategory = savedCategory
+          ? Number(savedCategory)
+          : res.data.data[0]?.id;
 
         setSelectedCategory(defaultCategory);
       } catch (error) {
@@ -269,7 +270,7 @@ const ProductList = () => {
                   <td className="border p-2 text-center">
                     {record.images?.length ? (
                       <Image
-                        src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${record.images[0].image_url}`}
+                        src={`${record.images[0].image_url}`}
                         alt="Product Image"
                         width={50}
                         height={50}
@@ -280,14 +281,24 @@ const ProductList = () => {
                     )}
                   </td>
                   <td className="border p-2">{record.name?.slice(0, 30)}...</td>
-                  <td className="border p-2">{record.description?.slice(0, 30)}...</td>
+                  <td className="border p-2">
+                    {record.description?.slice(0, 30)}...
+                  </td>
                   <td className="border p-2">{record.category || "N/A"}</td>
-                  <td className="border p-2">{new Date(record.created_at).toLocaleDateString()}</td>
-                  <td className="border p-2">{record.created_by || "Unknown"}</td>
+                  <td className="border p-2">
+                    {new Date(record.created_at).toLocaleDateString()}
+                  </td>
+                  <td className="border p-2">
+                    {record.created_by || "Unknown"}
+                  </td>
                   <td className="border p-2 text-center">
                     <button
                       className="bg-custom-gradient text-white px-4 text-[10px] py-[2px] rounded"
-                      onClick={() => router.push(`/admin/product-list/viewdetail/${record.id}`)}
+                      onClick={() =>
+                        router.push(
+                          `/admin/product-list/viewdetail/${record.id}`
+                        )
+                      }
                     >
                       View Details
                     </button>

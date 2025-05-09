@@ -66,7 +66,7 @@ const ProductLust = () => {
       // @ts-expect-error jh kj
       render: (text, record) => (
         <Image
-          src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${text[0]?.image_url}`}
+          src={`/${text[0]?.image_url}`}
           alt="Brand Logo"
           width={50}
           height={50}
@@ -111,19 +111,23 @@ const ProductLust = () => {
       // @ts-expect-error jk jk
       render: (_, record) => (
         <div className="flex gap-2">
-        <Button
-          onClick={() => router.push(`/admin/product-list/viewdetail/${record.id}`)}
-          className="bg-custom-gradient text-white"
-        >
-          View Details
-        </Button>
-        <Button
-          onClick={() => router.push(`/admin/store/product-list/edit/${record.id}`)}
-          className="bg-custom-gradient text-white"
-        >
-          Edit
-        </Button>
-      </div>
+          <Button
+            onClick={() =>
+              router.push(`/admin/product-list/viewdetail/${record.id}`)
+            }
+            className="bg-custom-gradient text-white"
+          >
+            View Details
+          </Button>
+          <Button
+            onClick={() =>
+              router.push(`/admin/store/product-list/edit/${record.id}`)
+            }
+            className="bg-custom-gradient text-white"
+          >
+            Edit
+          </Button>
+        </div>
         // <Button
         //   onClick={() =>
         //     router.push(`/admin/product-list/viewdetail/${record.id}`)

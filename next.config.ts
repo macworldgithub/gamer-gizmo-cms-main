@@ -17,14 +17,12 @@ const nextConfig: NextConfig = {
         port: "4001",
       },
     ],
+    domains: ["gamergizmobucket.s3.eu-north-1.amazonaws.com"],
   },
   eslint: {
-    // Warning: This allows production builds to successfully complete
-    // even if your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // Ignore TypeScript errors during the build process
     ignoreBuildErrors: true,
   },
 
