@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, List } from "antd";
 import Image from "next/image";
+import axios from "axios";
 
 interface CountryData {
   name: string;
@@ -10,26 +11,69 @@ interface CountryData {
   amount: string;
 }
 
+const flagMap: { [key: string]: string } = {
+  "New York": "/us.png",
+  "London": "/uk.png",
+  "Tokyo": "/japan.png",
+  "Paris": "/france.png",
+  "Sydney": "/australia.png",
+  "Toronto": "/canada.png",
+  "Mexico City": "/maxico.png",
+  "Sao Paulo": "/brazil.png",
+  "Dublin": "/ireland.png",
+  "Auckland": "/newzeland.png",
+  "Madrid": "/spain.png",
+  "Istanbul": "/turkey.png",
+  "Rome": "/italy.png",
+  "Buenos Aires": "/argentina.png",
+  // Add more mappings as needed
+};
+
+const getRandomAmount = () => {
+  const amounts = [
+    "$29.00",
+    "$50.00",
+    "$55.00",
+    "$63.00",
+    "$75.00",
+    "$80.00",
+    "$88.00",
+    "$90.00",
+    "$100.00",
+    "$450.00",
+  ];
+  return amounts[Math.floor(Math.random() * amounts.length)];
+};
+
 const TopCountries = () => {
-  const [countries] = useState<CountryData[]>([
-    { name: "United States", flag: "/us.png", amount: "$55.00" },
-    { name: "Mexico", flag: "/maxico.png", amount: "$63.00" },
-    { name: "Brazil", flag: "/brazil.png", amount: "$100.00" },
-    { name: "Canada", flag: "/canada.png", amount: "$29.00" },
-    { name: "Ireland", flag: "/ireland.png", amount: "$88.00" },
-    { name: "New Zealand", flag: "/newzeland.png", amount: "$100.00" },
-    { name: "Spain", flag: "/spain.png", amount: "$75.00" },
-    { name: "Turkey", flag: "/turkey.png", amount: "$80.00" },
-    { name: "Italy", flag: "/italy.png", amount: "$450.00" },
-    { name: "Argentina", flag: "/argentina.png", amount: "$50.00" },
-    { name: "Mexico", flag: "/maxico.png", amount: "$90.00" },
-  ]);
+  const [countries, setCountries] = useState<CountryData[]>([]);
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/analytics/locations`);
+
+        const locations: { id: number; name: string }[] = response.data;
+        const countryData: CountryData[] = locations.map((location) => ({
+          name: location.name,
+          flag: flagMap[location.name] || "/Action.png", // Fallback image
+          amount: getRandomAmount(),
+        }));
+
+        setCountries(countryData);
+      } catch (error) {
+        console.error("Error fetching locations:", error);
+      }
+    };
+
+    fetchLocations();
+  }, []);
 
   return (
     <Card
       title="Top Countries"
       bordered
-      className="w-full xl:max-w-lg max-w-md mx-auto !my-0 !py-0]"
+      className="w-full xl:max-w-lg max-w-md mx-auto !my-0 !py-0"
     >
       <List
         dataSource={countries}
