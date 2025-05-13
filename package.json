@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start -p 4009",
-    "lint": "next lint"
+    "lint": "next lint",
+    "clean:build": "rimraf .next && npm run build"
   },
   "dependencies": {
     "@ant-design/icons": "^5.6.0",
@@ -33,6 +34,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.1.4",
     "postcss": "^8",
+    "rimraf": "^6.0.1",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }

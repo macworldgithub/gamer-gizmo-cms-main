@@ -181,7 +181,7 @@ const ProductList = () => {
         const res = await axios.get<{ data: Category[] }>(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/categories/getAll`
         );
-        setCategories(res.data.data);
+        setCategories(res?.data?.data);
 
         // Retrieve and set selected category from localStorage
         const savedCategory = localStorage.getItem("selectedCategory");

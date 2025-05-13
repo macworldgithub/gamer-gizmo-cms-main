@@ -90,12 +90,7 @@ const BrandList = () => {
       dataIndex: "logo",
       key: "logo",
       render: (text: string) => (
-        <Image
-          src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${text}`}
-          alt="Brand Logo"
-          width={50}
-          height={50}
-        />
+        <Image src={` ${text}`} alt="Brand Logo" width={50} height={50} />
       ),
     },
     {
@@ -172,7 +167,6 @@ const BrandList = () => {
             name: category.name,
           }))}
           setIsModalOpen={setIsModalOpen}
-          
         />
       </Modal>
     </div>

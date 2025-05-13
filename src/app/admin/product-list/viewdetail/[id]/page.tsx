@@ -59,6 +59,7 @@ const ProductDetail = () => {
 
   const productId = params?.id;
   const [product, setProduct] = useState<Product | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -71,6 +72,7 @@ const ProductDetail = () => {
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/products/getProductById?id=${productId}`
         );
         setProduct(res.data.data);
+        console.log(res?.data?.data, "My products");
       } catch (error) {
         setError("Error fetching product. Please try again later.");
       } finally {
@@ -304,7 +306,8 @@ const ProductDetail = () => {
                     className="h-[500px] flex justify-center items-center"
                   >
                     <Image
-                      src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${img.image_url}`}
+                      src={img.image_url}
+                      // src={"/canada.png"}
                       alt={product.name}
                       width={500}
                       height={300}
@@ -397,7 +400,7 @@ const ProductDetail = () => {
                   <>
                     {product.users?.profile && (
                       <Image
-                        src={`https://backend.gamergizmo.com/${product.users.profile}`}
+                        src={product?.users?.profile}
                         alt={product.users.username}
                         width={50}
                         height={50}

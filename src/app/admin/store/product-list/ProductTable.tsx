@@ -19,6 +19,7 @@ const ProductLust = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // 1. Load categories and selectedCategory from localStorage
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -26,29 +27,60 @@ const ProductLust = () => {
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/categories/getAll`
         );
         setCategories(res.data.data);
+
+        // Read from localStorage
+        const savedCategory = localStorage.getItem("selectedCategory");
+        const defaultCategory = savedCategory
+          ? Number(savedCategory)
+          : res.data.data[0]?.id;
+
+        setSelectedCategory(defaultCategory);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
     };
     fetchCategories();
   }, []);
-  const fetchProducts = async () => {
+
+  // const fetchProducts = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const res = await axios.get(
+  //       `${process.env.NEXT_PUBLIC_API_BASE_URL}/products/getAll?category_id=${selectedCategory}&is_store_product=true`
+  //     );
+  //     setVariants(res.data.data);
+  //   } catch (error) {
+  //     console.error("Error fetching conditions:", error);
+  //     toast.error("Failed to load conditions.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  // useEffect(() => {
+  //   fetchProducts();
+  // }, [selectedCategory]);
+  // 2. Fetch products when selectedCategory changes
+  useEffect(() => {
+    if (selectedCategory !== null) {
+      fetchProducts(selectedCategory);
+    }
+  }, [selectedCategory]);
+
+  // 3. Fetch products
+  const fetchProducts = async (categoryId: number) => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/products/getAll?category_id=${selectedCategory}&is_store_product=true`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/products/getAll?category_id=${categoryId}&is_store_product=true`
       );
       setVariants(res.data.data);
     } catch (error) {
-      console.error("Error fetching conditions:", error);
-      toast.error("Failed to load conditions.");
+      console.error("Error fetching products:", error);
+      toast.error("Failed to load products.");
     } finally {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    fetchProducts();
-  }, [selectedCategory]);
 
   // Table Columns for Models
   const modelColumns = [
@@ -66,7 +98,7 @@ const ProductLust = () => {
       // @ts-expect-error jh kj
       render: (text, record) => (
         <Image
-          src={`/${text[0]?.image_url}`}
+          src={`${text[0]?.image_url}`}
           alt="Brand Logo"
           width={50}
           height={50}
@@ -139,9 +171,12 @@ const ProductLust = () => {
       ),
     },
   ];
+  // 4. Update localStorage when category changes
   const handleCategoryChange = (categoryId: number) => {
     setSelectedCategory(categoryId);
+    localStorage.setItem("selectedCategory", String(categoryId));
   };
+
   return (
     <div className="p-6 bg-white shadow-md rounded-lg">
       <h2 className="text-2xl font-semibold mb-4">Store Products Management</h2>
