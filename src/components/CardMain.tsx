@@ -24,12 +24,12 @@ const CardMain: React.FC = () => {
       try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/analytics/daily`, {
           headers: {
-            Authorization: "Bearer your_jwt_token_here", // Replace with actual token
+            Authorization: "Bearer your_jwt_token_here", 
           },
         });
 
-        // Get today's date in YYYY-MM-DD format
-        const today = new Date().toISOString().split('T')[0]; // e.g., "2025-05-13"
+        
+        const today = new Date().toISOString().split('T')[0];
         const todayData = response.data.find((record: { date: string }) => record.date === today);
 
         if (todayData) {
