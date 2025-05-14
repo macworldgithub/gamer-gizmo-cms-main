@@ -6,13 +6,13 @@ import SalesTable from "./SalesEarning";
 
 const Page = () => {
   return (
-    <div className="p-4 bg-gray-100 min-h-screen container">
+    <div className="p-4 bg-gray-100 h-screen container">
       <h3 className="text-xl font-bold text-black mb-2 ml-4">
-        Welcome back! Michel
+        Welcome back! Ifzal Ahmed
       </h3>
-      
-        <CardMain />
-      
+
+      <CardMain />
+
       <div className="flex justify-between container mb-6">
         <div className="w-[55%] ">
           <SalesChart />
@@ -22,7 +22,7 @@ const Page = () => {
         </div>
       </div>
 
-      <SalesTable />
+      {/* <SalesTable /> */}
       <div className="flex justify-between px-1 text-gray-400">
         <p className="md:text-[0.6rem] md:w-36 lg:w-[70%] lg:text-sm">
           Copyright © 2024 Gamergizmo, All rights reserved.

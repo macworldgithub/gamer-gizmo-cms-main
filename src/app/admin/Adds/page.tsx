@@ -44,32 +44,32 @@ const adSlotsByPage = {
     { id: 2, width: "25%", height: "480px" },
     { id: 3, width: "25%", height: "480px" },
     { id: 4, width: "90%", height: "150px" },
-    { id: 5, width: "39%", height: "200px" },
-    { id: 6, width: "39%", height: "200px" },
+    { id: 5, width: "62%", height: "200px" },
+    { id: 6, width: "62%", height: "200px" },
   ],
   "Popular Gaming PCS": [
     { id: 1, width: "90%", height: "200px" },
     { id: 2, width: "25%", height: "480px" },
     { id: 3, width: "25%", height: "480px" },
     { id: 4, width: "90%", height: "150px" },
-    { id: 5, width: "39%", height: "200px" },
-    { id: 6, width: "39%", height: "200px" },
+    { id: 5, width: "62%", height: "200px" },
+    { id: 6, width: "62%", height: "200px" },
   ],
   "Popular Gaming Consoles": [
     { id: 1, width: "90%", height: "200px" },
     { id: 2, width: "25%", height: "480px" },
     { id: 3, width: "25%", height: "480px" },
     { id: 4, width: "90%", height: "150px" },
-    { id: 5, width: "39%", height: "200px" },
-    { id: 6, width: "39%", height: "200px" },
+    { id: 5, width: "62%", height: "200px" },
+    { id: 6, width: "62%", height: "200px" },
   ],
   "Popular Components and Accessories": [
     { id: 1, width: "90%", height: "200px" },
     { id: 2, width: "25%", height: "480px" },
     { id: 3, width: "25%", height: "480px" },
     { id: 4, width: "90%", height: "150px" },
-    { id: 5, width: "39%", height: "200px" },
-    { id: 6, width: "39%", height: "200px" },
+    { id: 5, width: "62%", height: "200px" },
+    { id: 6, width: "62%", height: "200px" },
   ],
   Blogs: [
     { id: 1, width: "39%", height: "200px" },
@@ -94,7 +94,13 @@ const adSlotsByPage = {
 const pages = Object.keys(adSlotsByPage);
 
 const AdManager = () => {
-  const [selectedPage, setSelectedPage] = useState("Home");
+  const [selectedPage, setSelectedPage] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("selectedAdPage") || "Home";
+    }
+    return "Home";
+  });
+
   const [ads, setAds] = useState({});
   const fileInputRef = useRef(null);
 
@@ -168,24 +174,29 @@ const AdManager = () => {
   };
   //@ts-ignore
   const currentSlots = adSlotsByPage[selectedPage] || [];
+  const handlePageSelect = (page: string) => {
+    setSelectedPage(page);
+    localStorage.setItem("selectedAdPage", page);
+  };
 
   return (
     <div style={{ padding: 20 }}>
-      <h1>Ad Manager</h1>
+      <h1 className="font-bold text-xl mb-2">Ad Manager</h1>
 
       {/* Page Selector */}
-      <div style={{ marginBottom: 20 }}>
+      <div style={{ marginBottom: 20 }} className="">
         {pages.map((page) => (
           <button
             key={page}
-            onClick={() => setSelectedPage(page)}
+            onClick={() => handlePageSelect(page)}
             style={{
               marginRight: 10,
+              marginTop: 10,
               padding: "8px 16px",
-              backgroundColor: selectedPage === page ? "#007bff" : "#eee",
+              backgroundColor: selectedPage === page ? "#dc39fc" : "#eee",
               color: selectedPage === page ? "white" : "black",
               border: "none",
-              borderRadius: 4,
+              borderRadius: "10px",
               cursor: "pointer",
             }}
           >
@@ -258,13 +269,22 @@ const AdManager = () => {
                   </button>
                 </>
               ) : (
-                <label style={{ cursor: "pointer" }}>
-                  <span>Upload Ad {slot.id}</span>
+                // <label style={{ cursor: "pointer" }}>
+                //   <span>Upload Ad {slot.id}</span>
+                //   <input
+                //     type="file"
+                //     accept="image/*,video/*"
+                //     onChange={(e) => handleFileUpload(e, slot.id)}
+                //     style={{ display: "none" }}
+                //   />
+                // </label>
+                <label className="inline-block px-4 py-2 bg-[#dc39fc] text-white rounded-md cursor-pointer hover:bg-blue-700 transition">
+                  Upload Ad {slot.id}
                   <input
                     type="file"
                     accept="image/*,video/*"
                     onChange={(e) => handleFileUpload(e, slot.id)}
-                    style={{ display: "none" }}
+                    className="hidden"
                   />
                 </label>
               )}

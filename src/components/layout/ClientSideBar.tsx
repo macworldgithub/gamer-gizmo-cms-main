@@ -31,7 +31,7 @@ const ClientSideBar = ({ children }: { children: React.ReactNode }) => {
           onClick={() => {
             setIsCollapsed(true);
           }}
-          className="p-2 hover:bg-gray-200 hover:cursor-pointer h-fit"
+          className="p-2 hover:bg-gray-200 hover:cursor-pointer "
         >
           <FaListUl size={20} />
           {/* <TbLayoutSidebarLeftCollapseFilled size={20} /> */}
