@@ -42,24 +42,7 @@ const ProductLust = () => {
     fetchCategories();
   }, []);
 
-  // const fetchProducts = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const res = await axios.get(
-  //       `${process.env.NEXT_PUBLIC_API_BASE_URL}/products/getAll?category_id=${selectedCategory}&is_store_product=true`
-  //     );
-  //     setVariants(res.data.data);
-  //   } catch (error) {
-  //     console.error("Error fetching conditions:", error);
-  //     toast.error("Failed to load conditions.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-  // useEffect(() => {
-  //   fetchProducts();
-  // }, [selectedCategory]);
-  // 2. Fetch products when selectedCategory changes
+
   useEffect(() => {
     if (selectedCategory !== null) {
       fetchProducts(selectedCategory);
@@ -160,14 +143,7 @@ const ProductLust = () => {
             Edit
           </Button>
         </div>
-        // <Button
-        //   onClick={() =>
-        //     router.push(`/admin/product-list/viewdetail/${record.id}`)
-        //   }
-        //   className="bg-custom-gradient text-white"
-        // >
-        //   View Details
-        // </Button>
+      
       ),
     },
   ];

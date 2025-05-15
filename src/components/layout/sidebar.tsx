@@ -440,7 +440,7 @@ const SideBar = () => {
   return (
     <ClientSideBar>
       <Menu
-        className="max-md:hidden pt-4"
+        className="max-md:hidden"
         mode="inline"
         defaultSelectedKeys={["1"]}
         defaultOpenKeys={["sub1"]}

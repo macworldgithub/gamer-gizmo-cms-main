@@ -10,7 +10,7 @@ const ClientSideBar = ({ children }: { children: React.ReactNode }) => {
       <Sider
         collapsed={isCollapsed}
         width={250}
-        className="h-full  min-h-screen bg-white max-md:hidden"
+        className="  min-h-screen  bg-white max-md:hidden "
         collapsible
         trigger={null}
       >

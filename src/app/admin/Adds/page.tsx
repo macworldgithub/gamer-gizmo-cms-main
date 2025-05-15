@@ -118,7 +118,7 @@ const AdManager = () => {
       );
       setAds((prevAds) => ({
         ...prevAds,
-        [page]: response.data.map((ad: any) => ({
+        [page]: response?.data?.map((ad: any) => ({
           id: ad.id,
           ad_id: ad.ad_id,
           src: ad.url.startsWith("http")
@@ -180,7 +180,8 @@ const AdManager = () => {
   };
 
   return (
-    <div style={{ padding: 20 }}>
+    <div className="w-full max-w-[1200px] mx-auto lg:px-4">
+      {/* // <div style={{ padding: 20 } }> */}
       <h1 className="font-bold text-xl mb-2">Ad Manager</h1>
 
       {/* Page Selector */}
@@ -206,7 +207,7 @@ const AdManager = () => {
       </div>
 
       {/* Ad Slots */}
-      <div className="w-[80%] flex flex-wrap justify-center gap-2">
+      <div className="lg:w-[100%] md:w-[1200%] flex flex-wrap justify-center gap-2">
         {currentSlots.map((slot: any) => {
           //@ts-ignore
           const ad = ads[selectedPage]?.find((a) => a.ad_id === slot.id);
