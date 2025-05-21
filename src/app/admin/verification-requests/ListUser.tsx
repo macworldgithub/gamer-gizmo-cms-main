@@ -215,7 +215,7 @@ const ListUser = () => {
             <div className="flex justify-center mb-4">
               {selectedUser.profile ? (
                 <Image
-                  src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${selectedUser.profile}`}
+                  src={`${selectedUser.profile}`}
                   alt="profile"
                   width={400}
                   height={250}
@@ -286,7 +286,7 @@ const ListUser = () => {
             <h1 className="text-xl font-bold my-2">Verfication Document</h1>
             {selectedUser.nic_front_image && (
               <Image
-                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${selectedUser.nic_front_image}`}
+                src={`${selectedUser.nic_front_image}`}
                 alt="profile"
                 width={400}
                 height={250}
@@ -295,7 +295,7 @@ const ListUser = () => {
             )}
             {selectedUser.nic_back_image && (
               <Image
-                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${selectedUser.nic_back_image}`}
+                src={`${selectedUser.nic_back_image}`}
                 alt="profile"
                 width={400}
                 height={250}
