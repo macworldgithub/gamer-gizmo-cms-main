@@ -292,16 +292,28 @@ const ProductList = () => {
                     {record.created_by || "Unknown"}
                   </td>
                   <td className="border p-2 text-center">
-                    <button
-                      className="bg-custom-gradient text-white px-4 text-[10px] py-[2px] rounded"
-                      onClick={() =>
-                        router.push(
-                          `/admin/product-list/viewdetail/${record.id}`
-                        )
-                      }
-                    >
-                      View Details
-                    </button>
+                    <div className="flex justify-center gap-2">
+                      <button
+                        className="bg-custom-gradient text-white px-2 text-[10px] py-[2px] rounded"
+                        onClick={() =>
+                          router.push(
+                            `/admin/product-list/viewdetail/${record.id}`
+                          )
+                        }
+                      >
+                        View Details
+                      </button>
+                      <button
+                        className="bg-red-500 text-white px-2 text-[10px] py-[2px] rounded"
+                        onClick={() =>
+                          router.push(
+                            `/admin/product-list/viewdetail/${record.id}`
+                          )
+                        }
+                      >
+                        premium
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
