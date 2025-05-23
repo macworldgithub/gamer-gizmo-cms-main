@@ -259,7 +259,7 @@ const ListUser = () => {
             )}
             {selectedUser.nic_back_image && (
               <Image
-                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${selectedUser.nic_back_image}`}
+                src={`${selectedUser.nic_back_image}`}
                 alt="profile"
                 width={400}
                 height={250}
