@@ -306,12 +306,15 @@ const ProductDetail = () => {
                     className="h-[500px] flex justify-center items-center"
                   >
                     <Image
-                      src={img.image_url}
-                      // src={"/canada.png"}
+                      src={img.image_url.startsWith('http') ? img.image_url : `${process.env.NEXT_PUBLIC_API_BASE_URL}/${img.image_url}`}
                       alt={product.name}
                       width={500}
                       height={300}
                       className="object-cover w-full h-full rounded-lg"
+                      onError={(e) => {
+                        // @ts-ignore
+                        e.target.src = '/placeholder-image.png';
+                      }}
                     />
                   </div>
                 ))}
@@ -448,15 +451,15 @@ const ProductDetail = () => {
                 product.category_id == 4
                   ? Consolecolumns
                   : product.category_id == 2
-                  ? Desktopcolumns
-                  : columns
+                    ? Desktopcolumns
+                    : columns
               }
               dataSource={
                 product.category_id == 4
                   ? product.gaming_console
                   : product.category_id == 2
-                  ? product.personal_computers
-                  : product.laptops
+                    ? product.personal_computers
+                    : product.laptops
               }
               pagination={false}
               className="overflow-x-auto"

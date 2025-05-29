@@ -105,6 +105,7 @@ const MoreSpecification: React.FC<MoreSpecificationProps> = ({
     ProcessorVariant[]
   >([]);
   const [processorData, setProcessorData] = useState<Processor[]>([]);
+  const [selectedSubCategory, setSelectedSubCategory] = useState<string>("");
 
   const fetchProcessorVariants = async () => {
     try {
@@ -498,35 +499,55 @@ const MoreSpecification: React.FC<MoreSpecificationProps> = ({
         </>
       )}
 
-      {/* For Components */}
+      {/* For Components and Accessories */}
       {selectCategory?.name === "Components" && (
         <>
-          <Form.Item label="Component Type">
+          <Form.Item label="Select Type" required>
             <Select
-              value={formData.componentType}
-              //@ts-expect-error kejkfke
-              onChange={(e) => setSelectedComponentCategory(e.target.value)}
-              placeholder="Select Component Type"
+              value={selectedSubCategory}
+              onChange={(value) => {
+                setSelectedSubCategory(value);
+                // Reset component type when switching subcategory
+                handleFormChange("componentType", "");
+              }}
+              placeholder="Choose Component or Accessory"
             >
-              {componentCategories &&
-                componentCategories.length > 0 &&
-                componentCategories.map((e: any) => (
-                  <Option key={e.id} value={e.name}>
-                    {e.name}
-                  </Option>
-                ))}
+              <Select.Option value="components">Components</Select.Option>
+              <Select.Option value="accessories">Accessories</Select.Option>
             </Select>
           </Form.Item>
 
-          <Form.Item label="Component Details">
-            <Input
-              value={formData.componentDetails}
-              onChange={(e) =>
-                handleFormChange("componentDetails", e.target.value)
-              }
-              placeholder="Enter Component Details"
-            />
-          </Form.Item>
+          {selectedSubCategory === "components" && (
+            <Form.Item label="Component Type" required>
+              <Select
+                value={formData.componentType}
+                onChange={(value) => {
+                  handleFormChange("componentType", value);
+                  setSelectedComponentCategory(value);
+                }}
+                placeholder="Select Component Type"
+              >
+                {componentCategories &&
+                  componentCategories.length > 0 &&
+                  componentCategories.map((e: any) => (
+                    <Select.Option key={e.id} value={e.name}>
+                      {e.name}
+                    </Select.Option>
+                  ))}
+              </Select>
+            </Form.Item>
+          )}
+
+          {selectedSubCategory === "accessories" && (
+            <Form.Item label="Accessory Details" required>
+              <Input.TextArea
+                value={formData.accessoryDetails}
+                onChange={(e) => handleFormChange("accessoryDetails", e.target.value)}
+                placeholder="Enter Accessory Details"
+                rows={4}
+              />
+            </Form.Item>
+          )}
         </>
       )}
     </Form>

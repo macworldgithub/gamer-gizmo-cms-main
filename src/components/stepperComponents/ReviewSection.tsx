@@ -86,8 +86,10 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
   ];
 
   const componentDetails = [
-    { label: "Component Category", value: selectComponentCategory },
-    { label: "Component Text", value: formData.component_text },
+    { label: "Type", value: formData.accessoryDetails ? "Accessory" : "Component" },
+    ...(formData.componentType
+      ? [{ label: "Component Type", value: formData.componentType }]
+      : [{ label: "Accessory Details", value: formData.accessoryDetails }]),
   ];
   console.log(selectCategory?.name, "selectCategory?.name");
   return (

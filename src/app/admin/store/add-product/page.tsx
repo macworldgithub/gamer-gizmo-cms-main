@@ -130,7 +130,8 @@ const StepperForm: React.FC = () => {
     ports: "",
     batteryLife: "",
     color: "",
-    component_text: "",
+    componentType: "",
+    accessoryDetails: "",
     accessories: "",
     connectivity: "",
     warranty_status: "",
@@ -231,9 +232,14 @@ const StepperForm: React.FC = () => {
       formDataObject.append("model_id", selectedModel.id);
     }
     if (selectedCategory?.name === "Components") {
-      formDataObject.append("component_type", formData?.component_text);
-
-      formDataObject.append("text", formData.component_text);
+      if (formData.componentType) {
+        formDataObject.append("component_type", formData.componentType);
+        formDataObject.append("text", ""); // No component details needed
+      }
+      if (formData.accessoryDetails) {
+        formDataObject.append("component_type", "accessory");
+        formDataObject.append("text", formData.accessoryDetails);
+      }
     } else {
       formDataObject.append("ram", selectedRam.id.toString());
       formDataObject.append("processor", selectedProcessor?.id.toString());
@@ -297,14 +303,14 @@ const StepperForm: React.FC = () => {
   return (
     <div className="flex justify-center items-center w-full">
       <div className="w-[90%] mx-auto p-6 mt-4 bg-white shadow-lg rounded-lg">
-      <Steps current={current} className="mb-6 custom-steps" responsive={false}>
-  <Step title={<span>Category<br />Selection</span>} />
-  <Step title={<span>Product<br />Details</span>} />
-  <Step title={<span>More<br />Specifications</span>} />
-  <Step title={<span>Set<br />Price</span>} />
-  <Step title={<span>Upload<br />Images</span>} />
-  <Step title={<span>Review<br />Section</span>} />
-</Steps>
+        <Steps current={current} className="mb-6 custom-steps" responsive={false}>
+          <Step title={<span>Category<br />Selection</span>} />
+          <Step title={<span>Product<br />Details</span>} />
+          <Step title={<span>More<br />Specifications</span>} />
+          <Step title={<span>Set<br />Price</span>} />
+          <Step title={<span>Upload<br />Images</span>} />
+          <Step title={<span>Review<br />Section</span>} />
+        </Steps>
 
         {current === 0 && (
           <CategoryStep
@@ -397,7 +403,7 @@ const StepperForm: React.FC = () => {
             price={price}
             quantity={quantity}
             fileList={fileList}
-            selectComponentCategory={""}
+            selectComponentCategory={formData.componentType || ""}
             selectGpu={selectedGpu ?? { id: 0, name: "" }}
             selectRam={selectedRam ?? { id: 0, name: "" }}
             selectStoarge={selectedStorage ?? { id: 0, name: "" }}

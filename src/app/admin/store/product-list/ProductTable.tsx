@@ -80,12 +80,25 @@ const ProductLust = () => {
       key: "name",
       // @ts-expect-error jh kj
       render: (text, record) => (
-        <Image
-          src={`${text[0]?.image_url}`}
-          alt="Brand Logo"
-          width={50}
-          height={50}
-        />
+        <div className="relative w-[50px] h-[50px]">
+          {text && text[0]?.image_url ? (
+            <Image
+              src={text[0].image_url.startsWith('http') ? text[0].image_url : `${process.env.NEXT_PUBLIC_API_BASE_URL}/${text[0].image_url}`}
+              alt="Product Image"
+              width={50}
+              height={50}
+              className="object-cover rounded"
+              onError={(e) => {
+                // @ts-ignore
+                e.target.src = '/placeholder-image.png'; // You should add a placeholder image in your public folder
+              }}
+            />
+          ) : (
+            <div className="w-[50px] h-[50px] bg-gray-200 rounded flex items-center justify-center">
+              <span className="text-xs text-gray-500">No image</span>
+            </div>
+          )}
+        </div>
       ),
     },
     {
@@ -143,7 +156,7 @@ const ProductLust = () => {
             Edit
           </Button>
         </div>
-      
+
       ),
     },
   ];
