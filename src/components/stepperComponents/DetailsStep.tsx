@@ -176,7 +176,6 @@ const DetailsStep: React.FC<DetailsStepProps> = ({
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-md">
       {/* Title Input */}
-
       <label className="block text-gray-700 mb-1">Title</label>
       <Input
         placeholder="Enter title"
@@ -194,32 +193,38 @@ const DetailsStep: React.FC<DetailsStepProps> = ({
         value={formData.description || ""}
         onChange={(e) => handleFormChange("description", e.target.value)}
       />
-      <label className="block text-gray-700 mb-1">Brand</label>
-      <Select
-        placeholder="Select Brand"
-        className="w-full mb-4"
-        onChange={handleBrandSelect} // Use the new handler
-      >
-        {brands.map((brand) => (
-          <Option key={brand.id} value={brand.id}>
-            {brand.name}
-          </Option>
-        ))}
-      </Select>
-      {/* Model Dropdown */}
-      <label className="block text-gray-700 mb-1">Model</label>
-      <Select
-        placeholder="Select Model"
-        className="w-full mb-4"
-        disabled={!selectedBrand}
-        onChange={handleModelSelect}
-      >
-        {models.map((model) => (
-          <Option key={model.id} value={model.id}>
-            {model.name}
-          </Option>
-        ))}
-      </Select>
+
+      {/* Only show brand and model for non-Components categories */}
+      {selectedCategory?.name !== "Components" && (
+        <>
+          <label className="block text-gray-700 mb-1">Brand</label>
+          <Select
+            placeholder="Select Brand"
+            className="w-full mb-4"
+            onChange={handleBrandSelect}
+          >
+            {brands.map((brand) => (
+              <Option key={brand.id} value={brand.id}>
+                {brand.name}
+              </Option>
+            ))}
+          </Select>
+          {/* Model Dropdown */}
+          <label className="block text-gray-700 mb-1">Model</label>
+          <Select
+            placeholder="Select Model"
+            className="w-full mb-4"
+            disabled={!selectedBrand}
+            onChange={handleModelSelect}
+          >
+            {models.map((model) => (
+              <Option key={model.id} value={model.id}>
+                {model.name}
+              </Option>
+            ))}
+          </Select>
+        </>
+      )}
 
       {/* Location Dropdown */}
       <label className="block text-gray-700 mb-1">Location</label>
@@ -241,7 +246,6 @@ const DetailsStep: React.FC<DetailsStepProps> = ({
 
       {/* Condition Dropdown */}
       <label className="block text-gray-700 mb-1">Condition</label>
-
       <Select
         placeholder="Select Condition"
         className="w-full"

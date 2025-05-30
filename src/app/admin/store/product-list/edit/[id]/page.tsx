@@ -35,6 +35,7 @@ const EditStorePage = () => {
     const [brands, setBrands] = useState<any[]>([]);
     const [model, setModels] = useState<any[]>([]);
     const [fileList, setFileList] = useState<any[]>([]);
+    const [selectedComponentCategory, setSelectedComponentCategory] = useState<string>("");
 
     useEffect(() => {
         if (!id) return;
@@ -146,10 +147,42 @@ const EditStorePage = () => {
                 return;
             }
 
+            // Identify images to delete (present in adData.product_images but not in fileList)
+            const originalImageIds = (adData?.product_images || []).map((img: any) =>
+                img.id.toString()
+            );
+            const currentImageIds = fileList
+                .filter((file: any) => file.id) // Only consider files with an ID (existing images)
+                .map((file: any) => file.id.toString());
+            const imagesToDelete = originalImageIds.filter(
+                (id: string) => !currentImageIds.includes(id)
+            );
+
+            // Delete removed images
+            if (imagesToDelete.length > 0) {
+                await axios.delete(
+                    `${process.env.NEXT_PUBLIC_API_BASE_URL}/products/deleteProductImage`,
+                    {
+                        params: { image_ids: imagesToDelete },
+                        paramsSerializer: (params) => {
+                            return Object.entries(params)
+                                .map(([key, value]) => {
+                                    if (Array.isArray(value)) {
+                                        return value.map((val) => `${key}[]=${val}`).join("&");
+                                    }
+                                    return `${key}=${value}`;
+                                })
+                                .join("&");
+                        },
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+            }
+
             // Prepare form data
             const formData = new FormData();
 
-            // Handle images
+            // Handle images - only append new images (files with originFileObj)
             fileList.forEach((file: any) => {
                 if (file.originFileObj) {
                     formData.append("images", file.originFileObj);
@@ -197,15 +230,24 @@ const EditStorePage = () => {
                 formData.append("gaming_console", JSON.stringify([consoleFields]));
             }
             else if (adData.category_id === 3) { // Components
-                const componentFields = {
-                    component_type: "",
-                    text: "",
-                };
+                // Match the website's payload structure exactly
+                const component = adData.components?.[0] || {};
+                formData.append("components[0][component_type]", component.component_type?.toString() || "0");
+                formData.append("components[0][text]", component.text || "");
+                formData.append("components[0][id]", component.id?.toString() || "");
+                formData.append("components[0][product_id]", adData.id?.toString() || "");
 
-                formData.append("components", JSON.stringify([componentFields]));
+                // Set brand_id and model_id to 0 for components
+                formData.append("brand_id", "0");
+                formData.append("model_id", "0");
+            }
+            else {
+                // Handle other categories
+                formData.append("brand_id", adData.brand_id?.toString() || "");
+                formData.append("model_id", adData.model_id?.toString() || "");
             }
 
-            // Append basic product data
+            // Append basic product data with proper type conversion
             formData.append("prod_id", adData?.id?.toString() || "");
             formData.append("user_id", userId.toString());
             formData.append("category_id", adData?.category_id?.toString() || "");
@@ -213,9 +255,7 @@ const EditStorePage = () => {
             formData.append("price", adData?.price?.toString() || "");
             formData.append("condition", adData?.condition?.toString() || "");
             formData.append("description", adData?.description || "");
-            formData.append("brand_id", adData?.brand_id?.toString() || "");
             formData.append("location", adData?.location?.toString() || "");
-            formData.append("model_id", adData?.model_id?.toString() || "");
             formData.append("stock", adData?.stock?.toString() || "");
             formData.append("is_store_product", "true");
             formData.append("is_published", "true");

@@ -26,7 +26,7 @@ interface Category {
 interface MoreSpecificationProps {
   selectCategory?: Category | null;
   componentCategories: any;
-  setSelectedComponentCategory: any;
+  setSelectedComponentCategory: (id: string) => void;
   gpuData: any[];
   storageTypeData: any[];
   ramData: any[];
@@ -44,6 +44,7 @@ interface MoreSpecificationProps {
     warrantyStatus?: string;
     componentType?: string;
     componentDetails?: string;
+    accessoryDetails?: string;
   };
 
   handleFormChange: (
@@ -521,9 +522,9 @@ const MoreSpecification: React.FC<MoreSpecificationProps> = ({
             <Form.Item label="Component Type" required>
               <Select
                 value={formData.componentType}
-                onChange={(value) => {
-                  handleFormChange("componentType", value);
-                  setSelectedComponentCategory(value);
+                onChange={(value, option: any) => {
+                  handleFormChange("componentType", value); // Store name for UI/display
+                  setSelectedComponentCategory(option.key); // Store ID for backend
                 }}
                 placeholder="Select Component Type"
               >
@@ -541,7 +542,9 @@ const MoreSpecification: React.FC<MoreSpecificationProps> = ({
           {selectedSubCategory === "accessories" && (
             <Form.Item label="Accessory Details" required>
               <Input.TextArea
-                value={formData.accessoryDetails}
+                //@ts-ignore
+                value={formData?.accessoryDetails}
+                //@ts-ignore
                 onChange={(e) => handleFormChange("accessoryDetails", e.target.value)}
                 placeholder="Enter Accessory Details"
                 rows={4}

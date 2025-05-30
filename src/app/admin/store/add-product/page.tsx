@@ -63,6 +63,7 @@ const StepperForm: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState({ id: 2, name: "" });
   const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null);
   const [selectedModel, setSelectedModel] = useState<Brand | null>(null);
+  const [selectedComponentCategory, setSelectedComponentCategory] = useState<string>("");
   const router = useRouter();
 
   // Fetch functions
@@ -223,24 +224,26 @@ const StepperForm: React.FC = () => {
     formDataObject.append("condition", selectedCondition.id.toString());
     formDataObject.append("location", selectedLocation.id.toString());
     formDataObject.append("is_published", "true");
-    if (selectedBrand) {
-      formDataObject.append("brand_id", selectedBrand.id);
-    }
-    formDataObject.append("otherBrandName", formData.otherBrandName);
 
-    if (selectedModel) {
-      formDataObject.append("model_id", selectedModel.id);
-    }
+    // Handle brand_id and model_id based on category
     if (selectedCategory?.name === "Components") {
       if (formData.componentType) {
-        formDataObject.append("component_type", formData.componentType);
-        formDataObject.append("text", ""); // No component details needed
-      }
-      if (formData.accessoryDetails) {
-        formDataObject.append("component_type", "accessory");
+        formDataObject.append("component_type", selectedComponentCategory);
+        formDataObject.append("text", "");
+      } else if (formData.accessoryDetails) {
+        formDataObject.append("component_type", "0"); // Pass 0 for accessories
         formDataObject.append("text", formData.accessoryDetails);
       }
+      // Set brand_id and model_id to 0 for Components
+      formDataObject.append("brand_id", "0");
+      formDataObject.append("model_id", "0");
     } else {
+      if (selectedBrand) {
+        formDataObject.append("brand_id", selectedBrand.id);
+      }
+      if (selectedModel) {
+        formDataObject.append("model_id", selectedModel.id);
+      }
       formDataObject.append("ram", selectedRam.id.toString());
       formDataObject.append("processor", selectedProcessor?.id.toString());
       formDataObject.append(
@@ -261,6 +264,8 @@ const StepperForm: React.FC = () => {
       formDataObject.append("screen_resolution", formData.screenResolution);
       formDataObject.append("color", formData.color);
     }
+
+    formDataObject.append("otherBrandName", formData.otherBrandName);
 
     if (fileList.length > 0) {
       fileList.forEach((file) => {
@@ -363,7 +368,7 @@ const StepperForm: React.FC = () => {
             //@ts-ignore
             setSelectedStorageType={setSelectedStorageType}
             componentCategories={componentCategories}
-            setComponentCategories={setComponentCategories}
+            setSelectedComponentCategory={setSelectedComponentCategory}
             //@ts-ignore
             gpuData={gpuData}
             //@ts-ignore
