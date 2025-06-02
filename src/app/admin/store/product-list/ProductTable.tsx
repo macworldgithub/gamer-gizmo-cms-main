@@ -80,7 +80,7 @@ const ProductLust = () => {
       key: "name",
       // @ts-expect-error jh kj
       render: (text, record) => (
-        <div className="relative w-[50px] h-[50px]">
+        <div className="w-[50px] h-[50px] overflow-hidden flex items-center justify-center">
           {text && text[0]?.image_url ? (
             <Image
               src={text[0].image_url.startsWith('http') ? text[0].image_url : `${process.env.NEXT_PUBLIC_API_BASE_URL}/${text[0].image_url}`}
