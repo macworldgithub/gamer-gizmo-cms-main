@@ -28,6 +28,8 @@ const ProductList = () => {
   const [variants, setVariants] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -91,49 +93,76 @@ const ProductList = () => {
     setSelectedCategory(newCategory);
     localStorage.setItem("selectedCategory", String(newCategory)); // Store in localStorage
   };
-
   const setFeatured = async (productId: number) => {
     try {
       const token = localStorage.getItem('admin-x-token');
       if (!token) {
-        toast.error('Please login to set product as premium');
+        toast.error('Please login to manage premium status');
         return;
       }
 
       const response = await axios.put(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/products/setFeatured?product_id=${productId}`,
-        {},  // Empty body since backend only needs product_id
+        {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         }
       );
 
       if (response.status === 200) {
-        // Update local state optimistically
-        setVariants(prevVariants =>
-          prevVariants.map(product =>
-            product.id === productId
-              ? {
-                ...product,
-                is_featured: true
-              }
-              : product
-          )
-        );
-
-        // Refresh the products list to ensure we have the latest data
         if (selectedCategory !== null) {
           await fetchProducts(selectedCategory);
         }
-
         toast.success('Product marked as premium successfully');
       }
     } catch (error) {
-      console.error("Error setting product as premium:", error);
-      toast.error('Failed to set product as premium. Please try again.');
+      console.error("Error setting premium:", error);
+      toast.error('Failed to set premium status. Please try again.');
+    }
+  };
+
+  const removeFeatured = async (productId: number) => {
+    try {
+      const token = localStorage.getItem('admin-x-token');
+      if (!token) {
+        toast.error('Please login to manage premium status');
+        return;
+      }
+
+      const response = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/products/setNonFeatured?product_id=${productId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        if (selectedCategory !== null) {
+          await fetchProducts(selectedCategory);
+        }
+        toast.success('Product removed from premium successfully');
+        setShowModal(false);
+      }
+    } catch (error) {
+      console.error("Error removing premium:", error);
+      toast.error('Failed to remove premium status. Please try again.');
+    }
+  };
+
+  // Trigger from button click
+  const handlePremiumAction = (productId: number, isCurrentlyFeatured: boolean) => {
+    if (isCurrentlyFeatured) {
+      setSelectedProductId(productId);
+      setShowModal(true); // open modal to confirm removal
+    } else {
+      setFeatured(productId); // immediately set premium
     }
   };
 
@@ -217,10 +246,11 @@ const ProductList = () => {
                       </button>
                       <button
                         className={`${record.is_featured ? 'bg-green-500' : 'bg-red-500'} text-white px-2 text-[10px] py-[2px] rounded`}
-                        onClick={() => setFeatured(record.id)}
+                        onClick={() => handlePremiumAction(record.id, record.is_featured)}
                       >
-                        {record.is_featured ? 'Premium Product' : 'Set Premium'}
+                        {record.is_featured ? 'Remove Premium' : 'Set Premium'}
                       </button>
+
                     </div>
                   </td>
                 </tr>
@@ -235,6 +265,34 @@ const ProductList = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Confirmation Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full mx-4">
+            <h3 className="text-lg font-semibold mb-4">Remove Premium Status</h3>
+            <p className="mb-6">Are you sure you want to remove the premium status from this product?</p>
+            <div className="flex justify-end gap-4">
+              <button
+                className="px-4 py-2 text-gray-600 border border-gray-300 rounded hover:bg-gray-100"
+                onClick={() => {
+                  setShowModal(false);
+                  setSelectedProductId(null);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                //@ts-ignore
+                onClick={() => removeFeatured(selectedProductId)}
+              >
+                Remove Premium
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
