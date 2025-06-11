@@ -11,6 +11,8 @@ interface Stat {
   icon: React.ComponentType<{ className?: string }>;
 }
 
+const token = localStorage.getItem("admix-x-token");
+console.log(token, "tokennn")
 const CardMain: React.FC = () => {
   const [stats, setStats] = useState<Stat[]>([
     { value: "0", label: "Daily Signup", icon: FaUserPlus },
@@ -24,11 +26,12 @@ const CardMain: React.FC = () => {
       try {
         const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/analytics/daily`, {
           headers: {
-            Authorization: "Bearer your_jwt_token_here", 
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         });
 
-        
+
         const today = new Date().toISOString().split('T')[0];
         const todayData = response.data.find((record: { date: string }) => record.date === today);
 
