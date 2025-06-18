@@ -25,6 +25,9 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  serverActions: {
+    bodySizeLimit: "10mb", // or whatever size you want
+  },
 
   webpack(config: any) {
     // Find and modify the rule that handles SVGs

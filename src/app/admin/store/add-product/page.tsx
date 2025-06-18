@@ -113,6 +113,7 @@ const StepperForm: React.FC = () => {
     }
   };
 
+
   const [formData, setFormData] = useState<Record<string, any>>({
     processor: "",
     processor_type: "",
@@ -154,13 +155,14 @@ const StepperForm: React.FC = () => {
     id: 2,
     name: "",
   });
-  const [selectedCondition, setSelectedCondition] = useState<any>({
-    id: 2,
-    name: "",
-  });
-
+  // const [selectedCondition, setSelectedCondition] = useState<any>({
+  //   id: 2,
+  //   name: "",
+  // });
+  const [selectedCondition, setSelectedCondition] = useState<any>(null);
   const [price, setPrice] = useState<string>("");
   const [quantity, setQuantity] = useState<string>("");
+
 
   const handleFormChange = (field: string, value: string) => {
     console.log("Updating formData:", field, value);
@@ -201,6 +203,22 @@ const StepperForm: React.FC = () => {
 
     fetchCategories();
   }, []);
+  const getSteps = () => {
+    const baseSteps = [
+      { title: 'Category Selection' },
+      { title: 'Product Details' },
+      { title: 'Set Price' },
+      { title: 'Upload Images' },
+      { title: 'Review & Publish' }
+    ];
+
+    // Insert More Specifications after Product Details for Components/Accessories
+    if (selectedCategory?.name === 'Components' || selectedCategory?.name === 'Accessories') {
+      baseSteps.splice(2, 0, { title: 'More Specifications' });
+    }
+
+    return baseSteps;
+  };
 
   const handleSubmit = async () => {
     let formDataObject = new FormData();
@@ -288,13 +306,20 @@ const StepperForm: React.FC = () => {
     }
   };
 
+  const [steps, setSteps] = useState(getSteps());
+
+  // Update steps when category changes
+  useEffect(() => {
+    setSteps(getSteps());
+  }, [selectedCategory]);
+
   const next = () => {
     if (current === 0 && !selectedCategory) {
       setCategoryError("Please select a category");
       return;
     }
 
-    if (current === 5) {
+    if (current === steps.length - 1) {
       handleSubmit();
       return;
     }
@@ -303,21 +328,20 @@ const StepperForm: React.FC = () => {
     setCurrent(current + 1);
   };
 
-  const prev = () => setCurrent(current - 1);
-  console.log(selectedRam, "selectedRam");
-  return (
-    <div className="flex justify-center items-center w-full">
-      <div className="w-[90%] mx-auto p-6 mt-4 bg-white shadow-lg rounded-lg">
-        <Steps current={current} className="mb-6 custom-steps" responsive={false}>
-          <Step title={<span>Category<br />Selection</span>} />
-          <Step title={<span>Product<br />Details</span>} />
-          <Step title={<span>More<br />Specifications</span>} />
-          <Step title={<span>Set<br />Price</span>} />
-          <Step title={<span>Upload<br />Images</span>} />
-          <Step title={<span>Review<br />Section</span>} />
-        </Steps>
+  const prev = () => {
+    setCurrent(current - 1);
+  };
 
-        {current === 0 && (
+
+  const getCurrentStepContent = () => {
+    // Adjusted step indices to account for dynamic steps
+    let adjustedIndex = current;
+    const hasSpecStep = selectedCategory?.name === 'Components' || selectedCategory?.name === 'Accessories';
+
+    // Map the current step to the correct component
+    if (hasSpecStep) {
+      switch (current) {
+        case 0: return (
           <CategoryStep
             categories={categories}
             selectedCategory={selectedCategory}
@@ -326,10 +350,10 @@ const StepperForm: React.FC = () => {
             categoryError={categoryError}
             next={next}
           />
-        )}
-
-        {current === 1 && (
+        );
+        case 1: return (
           //@ts-ignore
+
           <DetailsStep
             setComponentCategories={setComponentCategories}
             selectedCategory={selectedCategory}
@@ -342,55 +366,50 @@ const StepperForm: React.FC = () => {
             setSelectedCondition={setSelectedCondition}
             selectedCondition={selectedCondition}
           />
-        )}
-        {current === 2 && (
+        );
+        case 2: return (
           <MoreSpecification
             selectCategory={selectedCategory ?? undefined}
             //@ts-ignore
+
             formData={formData}
             handleFormChange={handleFormChange}
             //@ts-ignore
+
             setSelectedProcessorVariant={setSelectedProcessorVariant}
             selectProcessorVariant={selectedProcessorVariant}
             //@ts-ignore
+
             setSelectedProcessor={setSelectedProcessor}
             selectProcessor={selectedProcessor}
             selectGpu={selectedGpu}
-            //@ts-ignore
             setSelectedGpu={setSelectedGpu}
-            //@ts-ignore
             setSelectedRam={setSelectedRam}
             selectRam={selectedRam}
             selectStorage={selectedStorage}
-            //@ts-ignore
             setSelectedStorage={setSelectedStorage}
             selectStorageType={selectedStorageType}
-            //@ts-ignore
             setSelectedStorageType={setSelectedStorageType}
             componentCategories={componentCategories}
             setSelectedComponentCategory={setSelectedComponentCategory}
-            //@ts-ignore
             gpuData={gpuData}
-            //@ts-ignore
             storageTypeData={storageTypeData}
-            //@ts-ignore
             ramData={ramData}
-            //@ts-ignore
             storageData={storageData}
           />
-        )}
-        {current === 3 && (
+        );
+        case 3: return (
           <SetPrice
             price={price}
             quantity={quantity}
             setPrice={setPrice}
             setQuantity={setQuantity}
           />
-        )}
-        {current === 4 && (
+        );
+        case 4: return (
           <UploadImages fileList={fileList} setFileList={setFileList} />
-        )}
-        {current === 5 && (
+        );
+        case 5: return (
           <ReviewSection
             //@ts-ignore
             selectCategory={selectedCategory ?? { id: 0, name: "" }}
@@ -398,9 +417,7 @@ const StepperForm: React.FC = () => {
             selectBrand={selectedBrand ?? { id: 0, name: "" }}
             //@ts-ignore
             selectModel={selectedModel ?? { id: 0, name: "" }}
-            selectProcessorVariant={
-              selectedProcessorVariant ?? { id: 0, name: "" }
-            }
+            selectProcessorVariant={selectedProcessorVariant ?? { id: 0, name: "" }}
             selectProcessor={selectedProcessor ?? { id: 0, name: "" }}
             selectLocation={selectedLocation ?? { id: 0, name: "" }}
             selectedCondition={selectedCondition}
@@ -414,7 +431,89 @@ const StepperForm: React.FC = () => {
             selectStoarge={selectedStorage ?? { id: 0, name: "" }}
             selectStorageType={selectedStorageType ?? { id: 0, name: "" }}
           />
-        )}
+        );
+        default: return null;
+      }
+    } else {
+      switch (current) {
+        case 0: return (
+          <CategoryStep
+            categories={categories}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            loadingCategories={loadingCategories}
+            categoryError={categoryError}
+            next={next}
+          />
+        );
+        case 1: return (
+          //@ts-ignore
+          <DetailsStep
+            setComponentCategories={setComponentCategories}
+            selectedCategory={selectedCategory}
+            handleFormChange={handleFormChange}
+            formData={formData}
+            selectedLocation={selectedLocation}
+            setSelectedLocation={setSelectedLocation}
+            onBrandSelect={handleBrandSelect}
+            onSelectModel={handleModelSelect}
+            setSelectedCondition={setSelectedCondition}
+            selectedCondition={selectedCondition}
+          />
+        );
+        case 2: return (
+          <SetPrice
+            price={price}
+            quantity={quantity}
+            setPrice={setPrice}
+            setQuantity={setQuantity}
+          />
+        );
+        case 3: return (
+          <UploadImages fileList={fileList} setFileList={setFileList} />
+        );
+        case 4: return (
+          <ReviewSection
+            //@ts-ignore
+            selectCategory={selectedCategory ?? { id: 0, name: "" }}
+            //@ts-ignore
+            selectBrand={selectedBrand ?? { id: 0, name: "" }}
+            //@ts-ignore
+            selectModel={selectedModel ?? { id: 0, name: "" }}
+            selectProcessorVariant={selectedProcessorVariant ?? { id: 0, name: "" }}
+            selectProcessor={selectedProcessor ?? { id: 0, name: "" }}
+            selectLocation={selectedLocation ?? { id: 0, name: "" }}
+            selectedCondition={selectedCondition}
+            formData={formData}
+            price={price}
+            quantity={quantity}
+            fileList={fileList}
+            selectComponentCategory={formData.componentType || ""}
+            selectGpu={selectedGpu ?? { id: 0, name: "" }}
+            selectRam={selectedRam ?? { id: 0, name: "" }}
+            selectStoarge={selectedStorage ?? { id: 0, name: "" }}
+            selectStorageType={selectedStorageType ?? { id: 0, name: "" }}
+          />
+        );
+        default: return null;
+      }
+    }
+  };
+  return (
+
+    <div className="flex justify-center items-center w-full">
+      <div className="w-[90%] mx-auto p-6 mt-4 bg-white shadow-lg rounded-lg">
+        <Steps current={current} className="mb-6 custom-steps" responsive={false}>
+          {steps.map((step, index) => (
+            <Step
+              key={index}
+              title={<span>{step.title.split(' ')[0]}<br />{step.title.split(' ')[1]}</span>}
+            />
+          ))}
+        </Steps>
+
+        {getCurrentStepContent()}
+
         {/* Navigation Buttons */}
         <div className="flex justify-between mt-6">
           {current > 0 && (
@@ -423,8 +522,12 @@ const StepperForm: React.FC = () => {
             </Button>
           )}
 
-          <Button onClick={next} className="bg-blue-500 text-white">
-            {current === 5 ? "Submit" : "Next"}
+          <Button
+            onClick={next}
+            className="bg-blue-500 text-white"
+            type="primary"
+          >
+            {current === steps.length - 1 ? "Publish" : "Next"}
           </Button>
         </div>
       </div>

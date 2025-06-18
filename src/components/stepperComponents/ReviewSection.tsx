@@ -38,20 +38,23 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
   selectStorageType,
   selectedCondition,
 }) => {
+  console.log(selectedCondition, "selectedCondition");
+  const hideBrandAndModel =
+    selectCategory?.name === "Components" || selectCategory?.name === "Accessories";
   const details = [
     { label: "Category", value: selectCategory?.name },
-    {
+    !hideBrandAndModel && {
       label: "Brand",
       value: selectBrand?.name ? selectBrand?.name : formData.otherBrandName,
     },
-    { label: "Model", value: selectModel?.name },
+    !hideBrandAndModel && { label: "Model", value: selectModel?.name },
     { label: "Title", value: formData.title },
     { label: "Description", value: formData.description },
     { label: "Condition", value: selectedCondition.name },
     { label: "Location", value: selectLocation?.name },
     { label: "Price", value: price },
     { label: "Quantity", value: quantity },
-  ];
+  ].filter(Boolean);
 
   const desktopDetails = [
     { label: "Processor", value: selectProcessor.name },
@@ -91,6 +94,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
       ? [{ label: "Component Type", value: formData.componentType }]
       : [{ label: "Accessory Details", value: formData.accessoryDetails }]),
   ];
+
   console.log(selectCategory?.name, "selectCategory?.name");
   return (
     <div className="p-8 bg-custom-gradient  shadow-2xl rounded-xl border border-gray-200 max-w-3xl mx-auto text-gray-900">
@@ -99,7 +103,17 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-lg">
-        {details.map(({ label, value }, index) => (
+        {/* {details.map(({ label, value }, index) => (
+          <div key={index} className="bg-white p-3 rounded-md">
+            <p className="text-black text-xl font-bold">{label}</p>
+            <p className="text-gray-500 font-semibold text-base">
+              {value || "Not provided"}
+            </p>
+          </div>
+        ))} */}
+
+
+        {details.map(({ label, value }: any, index) => (
           <div key={index} className="bg-white p-3 rounded-md">
             <p className="text-black text-xl font-bold">{label}</p>
             <p className="text-gray-500 font-semibold text-base">
@@ -108,7 +122,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
           </div>
         ))}
 
-        {["Laptops"].includes(selectCategory?.name) &&
+        {/* {["Laptops"].includes(selectCategory?.name) &&
           laptopDetails.map(({ label, value }, index) => (
             <div key={index} className="bg-white p-3 rounded-md">
               <p className="text-black text-xl font-bold">{label}</p>
@@ -116,8 +130,8 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
                 {value || "Not provided"}
               </p>
             </div>
-          ))}
-        {["Desktops"].includes(selectCategory?.name) &&
+          ))} */}
+        {/* {["Desktops"].includes(selectCategory?.name) &&
           desktopDetails.map(({ label, value }, index) => (
             <div key={index} className="bg-white p-3 rounded-md">
               <p className="text-black text-xl font-bold">{label}</p>
@@ -125,8 +139,8 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
                 {value || "Not provided"}
               </p>
             </div>
-          ))}
-        {selectCategory?.name == "Gaming Consoles" &&
+          ))} */}
+        {/* {selectCategory?.name == "Gaming Consoles" &&
           consoleDetails.map(({ label, value }, index) => (
             <div key={index} className="bg-white p-3 rounded-md">
               <p className="text-black text-xl font-bold">{label}</p>
@@ -134,7 +148,7 @@ const ReviewSection: React.FC<ReviewSectionProps> = ({
                 {value || "Not provided"}
               </p>
             </div>
-          ))}
+          ))} */}
 
         {selectCategory?.name === "Components" &&
           componentDetails.map(({ label, value }, index) => (

@@ -248,11 +248,12 @@ const DetailsStep: React.FC<DetailsStepProps> = ({
       <label className="block text-gray-700 mb-1">Condition</label>
       <Select
         placeholder="Select Condition"
-        className="w-full"
-        value={selectedCondition.id}
+        className="w-full mb-4"
+        value={selectedCondition?.id}
         onChange={(value) => {
-          const location = conditions?.find((loc) => loc?.id === value);
-          setSelectedCondition(location);
+          const condition = conditions.find((cond) => cond.id === value) || null;
+          setSelectedCondition(condition);
+          handleFormChange("condition", condition?.id || ""); // Also update formData
         }}
       >
         {conditions.map((condition) => (

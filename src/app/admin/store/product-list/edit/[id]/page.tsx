@@ -251,7 +251,7 @@ const EditStorePage = () => {
             formData.append("prod_id", adData?.id?.toString() || "");
             formData.append("user_id", userId.toString());
             formData.append("category_id", adData?.category_id?.toString() || "");
-            formData.append("name", adData?.name || "");
+            formData.append("name", adData?.name.toString() || "");
             formData.append("price", adData?.price?.toString() || "");
             formData.append("condition", adData?.condition?.toString() || "");
             formData.append("description", adData?.description || "");
