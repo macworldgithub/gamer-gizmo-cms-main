@@ -77,6 +77,11 @@ const adSlotsByPage = {
     { id: 3, width: "39%", height: "200px" },
     { id: 4, width: "39%", height: "200px" },
   ],
+  "Blog Detail": [
+    { id: 1, width: "39%", height: "200px" },
+    { id: 2, width: "39%", height: "200px" },
+    { id: 3, width: "39%", height: "200px" },
+  ],
   "Contact Us": [
     { id: 1, width: "39%", height: "200px" },
     { id: 2, width: "39%", height: "200px" },

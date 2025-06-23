@@ -216,7 +216,7 @@ const StepperForm: React.FC = () => {
     if (selectedCategory?.name === 'Components' || selectedCategory?.name === 'Accessories') {
       baseSteps.splice(2, 0, { title: 'More Specifications' });
     }
-
+    
     return baseSteps;
   };
 
