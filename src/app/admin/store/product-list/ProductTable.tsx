@@ -71,13 +71,16 @@ const ProductLust = () => {
       title: "S.No",
       dataIndex: "sno",
       key: "sno",
+      
       // @ts-expect-error jk jk
       render: (_, __, index) => index + 1,
+      responsive: ['xs', 'sm', 'md', 'lg'],
     },
     {
       title: "Image",
       dataIndex: "images",
       key: "name",
+      responsive: ['xs', 'sm', 'md', 'lg'],
       // @ts-expect-error jh kj
       render: (text, record) => (
         <div className="w-[50px] h-[50px] overflow-hidden flex items-center justify-center">
@@ -105,6 +108,7 @@ const ProductLust = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      responsive: ['xs', 'sm', 'md', 'lg'],
       // @ts-expect-error jh kj
       render: (_, record) => <p>{record.name.slice(0, 30)}...</p>,
     },
@@ -113,6 +117,7 @@ const ProductLust = () => {
       title: "Description",
       dataIndex: "description",
       key: "description",
+      responsive: ['xs', 'sm', 'md', 'lg'],
       // @ts-expect-error jh kj
       render: (_, record) => <p>{record.description.slice(0, 30)}...</p>,
     },
@@ -120,6 +125,7 @@ const ProductLust = () => {
       title: "Category",
       dataIndex: "category",
       key: "category",
+      responsive: ['xs', 'sm', 'md', 'lg'],
     },
     {
       title: "Posted At",
@@ -127,15 +133,18 @@ const ProductLust = () => {
       key: "created_at",
       // @ts-expect-error jh kj
       render: (_, record) => <p>{FormatDate(_)}</p>,
+      responsive: ['xs', 'sm', 'md', 'lg'],
     },
     {
       title: "Posted By",
       dataIndex: "created_by",
       key: "created_by",
+      responsive: ['xs', 'sm', 'md', 'lg'],
     },
     {
       title: "Actions",
       key: "actions",
+      responsive: ['xs', 'sm', 'md', 'lg'],
       // @ts-expect-error jk jk
       render: (_, record) => (
         <div className="flex gap-2">
@@ -167,40 +176,40 @@ const ProductLust = () => {
   };
 
   return (
+    
     <div className="p-6 bg-white shadow-md rounded-lg">
-      <h2 className="text-2xl font-semibold mb-4">Store Products Management</h2>
-      <div className="mb-4 flex gap-4">
-        <Select
-          placeholder="Select Category"
-          className="w-1/3"
-          onChange={handleCategoryChange}
-          value={selectedCategory ?? undefined}
-          loading={loading}
-        >
-          {categories.map((category) => (
-            <Select.Option key={category.id} value={category.id}>
-              {category.name}
-            </Select.Option>
-          ))}
-        </Select>
-      </div>
+  <h2 className="text-2xl font-semibold mb-4">Store Products Management</h2>
 
-      {/* Models Table */}
-      <Table
-        dataSource={variants}
-        columns={modelColumns}
-        loading={loading}
-        rowKey="id"
-        pagination={{ pageSize: 10 }}
-        bordered
-      />
+  <div className="mb-4 flex gap-4 flex-wrap">
+    <Select
+      placeholder="Select Category"
+      className="min-w-[200px] w-full sm:w-1/3"
+      onChange={handleCategoryChange}
+      value={selectedCategory ?? undefined}
+      loading={loading}
+    >
+      {categories.map((category) => (
+        <Select.Option key={category.id} value={category.id}>
+          {category.name}
+        </Select.Option>
+      ))}
+    </Select>
+  </div>
 
-      {/* <AddConditionModal
-        fetch={fetchVaraints}
-        isOpen={isModalOpen}
-        setIsOpen={setIsModalOpen}
-      /> */}
-    </div>
+  {/* Make the table horizontally scrollable */}
+  <div className="overflow-x-auto">
+    <Table
+      dataSource={variants}
+      //@ts-ignore
+      columns={modelColumns}
+      loading={loading}
+      rowKey="id"
+      pagination={{ pageSize: 10 }}
+      bordered
+    />
+  </div>
+</div>
+
   );
 };
 
