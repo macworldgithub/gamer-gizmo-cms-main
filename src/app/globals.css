@@ -91,3 +91,20 @@ input:focus {
   .ant-steps-item-title::after {
   width: 0;
 }
+
+/* Fix Jodit Editor lists visibility */
+.jodit-wysiwyg ul,
+.jodit-wysiwyg ol {
+  list-style: revert !important; /* Show bullets/numbers */
+  margin-left: 20px !important;  /* Proper indentation */
+  padding-left: 20px !important;
+}
+
+/* Ensure list items are visible */
+.jodit-wysiwyg li {
+  display: list-item !important;
+}
+
+.jodit-toolbar__box .jodit-toolbar-button__trigger {
+  display: none !important;
+}

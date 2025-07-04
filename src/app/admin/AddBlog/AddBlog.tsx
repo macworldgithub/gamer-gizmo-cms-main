@@ -5,6 +5,7 @@ import { Input, Tag } from "antd";
 import axios from "axios";
 import toast from "react-hot-toast";
 import CustomLoader from "@/components/CustomLoader";
+import { useRouter } from "next/navigation";
 
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
@@ -30,7 +31,7 @@ const AddBlogForm = () => {
     description: "",
     image: null,
   });
-
+  const router = useRouter();
   const [inputTag, setInputTag] = useState<string>("");
   const editorRef = useRef(null);
 
@@ -101,6 +102,10 @@ const AddBlogForm = () => {
       );
 
       toast.success("Blog created successfully!");
+      setTimeout(() => {
+        router.push("BlogList");
+      });
+
       console.log("Response:", response.data);
 
       // Clear the form
@@ -200,14 +205,36 @@ const AddBlogForm = () => {
               height: 250,
               enableDragAndDropFileToEditor: true,
               defaultActionOnPaste: "insert_clear_html",
-              pasteHTMLActionList: [
-                { value: "insert_clear_html", text: "Insert as clear HTML" },
-                { value: "insert_paragraph", text: "Insert as paragraph" },
-              ],
               askBeforePasteHTML: false,
               askBeforePasteFromWord: false,
-              //@ts-ignore
-              processPasteHTML: (html) => html,
+              toolbar: true,
+              buttons: [
+                "paragraph",
+                "|",
+                "bold",
+                "italic",
+                "underline",
+                "|",
+                "ul",
+                "ol",
+                "|",
+                "font",
+                "fontsize",
+                "brush",
+                "|",
+                "table",
+                "link",
+                "|",
+                "align",
+                "undo",
+                "redo",
+                "|",
+                "hr",
+                "eraser",
+                "|",
+                "fullsize",
+                "print",
+              ],
             }}
           />
         </div>
