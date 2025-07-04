@@ -108,3 +108,58 @@ input:focus {
 .jodit-toolbar__box .jodit-toolbar-button__trigger {
   display: none !important;
 }
+/* Style headings inside the editor */
+.jodit-wysiwyg h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0.67em 0;
+}
+
+.jodit-wysiwyg h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0.75em 0;
+}
+
+.jodit-wysiwyg h3 {
+  font-size: 1.17em;
+  font-weight: bold;
+  margin: 0.83em 0;
+}
+
+.jodit-wysiwyg h4 {
+  font-size: 1em;
+  font-weight: bold;
+  margin: 1.12em 0;
+}
+/* ===== Blockquote styling ===== */
+.jodit-wysiwyg blockquote {
+  /* border-left: 4px solid #ccc; */
+  padding-left: 1em;
+  margin: 1em 0;
+  /* background-color: #f9f9f9; */
+  color: #555;
+  font-style: italic;
+}
+
+/* ===== Inline code styling ===== */
+.jodit-wysiwyg code {
+  /* background-color: #f5f5f5; */
+  color: #c7254e;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Fira Mono', 'Consolas', 'Monaco', monospace;
+  font-size: 0.95em;
+}
+
+/* ===== Code block styling (preformatted blocks) ===== */
+.jodit-wysiwyg pre {
+  /* background-color: #f4f4f4; */
+  /* color: #333; */
+  padding: 12px;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-family: 'Fira Mono', 'Consolas', 'Monaco', monospace;
+  font-size: 0.95em;
+  margin: 1em 0;
+}
