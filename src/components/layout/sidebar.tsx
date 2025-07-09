@@ -144,6 +144,8 @@ import {
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { FaMicroblog } from "react-icons/fa";
+// import { FaComment } from "react-icons/fa";
+import { LiaUsersSolid } from "react-icons/lia";
 import { LuComponent, LuStore } from "react-icons/lu";
 import {
   MdOutlineSdStorage,
@@ -157,6 +159,7 @@ import { GiProcessor } from "react-icons/gi";
 import { IoSettingsOutline } from "react-icons/io5";
 import { CiLocationOn } from "react-icons/ci";
 import { RxCardStackPlus } from "react-icons/rx";
+
 // import ClientSideBar from "../another_folder/ClientSideBar";
 
 // const items2: MenuProps["items"] = [
@@ -309,6 +312,8 @@ const SideBar = () => {
       label: "Models",
       onClick: () => handleNavigation("/admin/model-list"),
     },
+
+
     {
       key: "5",
       icon: React.createElement(LaptopOutlined),
@@ -405,6 +410,15 @@ const SideBar = () => {
       label: "Settings",
       onClick: () => handleNavigation("/admin/settings"),
     },
+
+{
+  key: "community",
+  // icon:<FaComment size={18}/>,
+   icon:<LiaUsersSolid  size={20}/>,
+  label:"Community",
+  onClick:()=> handleNavigation("/admin/community")
+},
+
     {
       key: "blog",
       icon: <FaMicroblog size={22} />,
@@ -422,6 +436,9 @@ const SideBar = () => {
         },
       ],
     },
+
+
+
     {
       key: "logout",
       icon: <Image src={logout} alt="Logout" width={24} height={24} />,

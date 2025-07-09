@@ -22,6 +22,7 @@ interface Brand {
 const BrandList = () => {
   // @ts-ignore
   const token = localStorage.getItem("admin-x-token");
+  console.log("token",token)
   const [categories, setCategories] = useState<Category[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number>(1);
