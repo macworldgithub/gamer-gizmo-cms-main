@@ -163,3 +163,11 @@ input:focus {
   font-size: 0.95em;
   margin: 1em 0;
 }
+
+/* Force Ant Design Modal on top */
+.ant-modal-root {
+  z-index: 9999 !important;
+}
+.ant-modal-mask {
+  z-index: 9998 !important;
+}
