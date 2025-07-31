@@ -195,8 +195,10 @@ const AddBlogForm = () => {
             Description
           </label>
           <JoditEditor
+            //@ts-ignore
             ref={editorRef}
             value={formData.description}
+            //@ts-ignore
             onBlur={(newContent) =>
               setFormData((prev) => ({ ...prev, description: newContent }))
             }
