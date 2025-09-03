@@ -1,5 +1,4 @@
 
-
 "use client";
 
 import { Line } from "react-chartjs-2";
@@ -97,6 +96,7 @@ const SalesChart = () => {
         setSalesData(null);
       }
     };
+
     fetchSalesData();
   }, [startDate, endDate, selectedProductId]);
 
