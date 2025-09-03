@@ -504,15 +504,20 @@ const AddBlogForm = () => {
                 "emoticons",
                 "wordcount",
               ],
-              toolbar:
-                "undo redo | styles | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | code preview fullscreen | emoticons",
+              toolbar: `
+      undo redo | styles | fontfamily fontsize fontsizeselect | 
+      forecolor backcolor | bold italic underline strikethrough | 
+      alignleft aligncenter alignright alignjustify | 
+      bullist numlist outdent indent | link image media | 
+      code preview fullscreen | emoticons | customButton
+    `,
               content_style: `
-                h1 { font-size: 2em; font-weight: bold; margin: 0.67em 0; }
-                h2 { font-size: 1.5em; font-weight: bold; margin: 0.75em 0; }
-                h3 { font-size: 1.17em; font-weight: bold; margin: 0.83em 0; }
-                h4 { font-size: 1em; font-weight: bold; margin: 1.12em 0; }
-                body { font-family:Helvetica,Arial,sans-serif; font-size:14px }
-              `,
+      h1 { font-size: 2em; font-weight: bold; margin: 0.67em 0; }
+      h2 { font-size: 1.5em; font-weight: bold; margin: 0.75em 0; }
+      h3 { font-size: 1.17em; font-weight: bold; margin: 0.83em 0; }
+      h4 { font-size: 1em; font-weight: bold; margin: 1.12em 0; }
+      body { font-family:Helvetica,Arial,sans-serif; font-size:14px }
+    `,
               style_formats: [
                 { title: "Heading 1", format: "h1" },
                 { title: "Heading 2", format: "h2" },
@@ -522,6 +527,26 @@ const AddBlogForm = () => {
                 { title: "Blockquote", format: "blockquote" },
                 { title: "Code", format: "code" },
               ],
+              font_size_formats: "8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt",
+              font_family_formats: `
+      Andale Mono=andale mono,times; 
+      Arial=arial,helvetica,sans-serif; 
+      Arial Black=arial black,avant garde; 
+      Book Antiqua=book antiqua,palatino;
+      Comic Sans MS=comic sans ms,sans-serif; 
+      Courier New=courier new,courier;
+      Georgia=georgia,palatino;
+      Helvetica=helvetica;
+      Impact=impact,chicago;
+      Symbol=symbol;
+      Tahoma=tahoma,arial,helvetica,sans-serif;
+      Terminal=terminal,monaco;
+      Times New Roman=times new roman,times;
+      Trebuchet MS=trebuchet ms,geneva;
+      Verdana=verdana,geneva;
+      Webdings=webdings;
+      Wingdings=wingdings,zapf dingbats
+    `,
               block_formats:
                 "Paragraph=p;Heading 1=h1;Heading 2=h2;Heading 3=h3;Heading 4=h4;Code=code;Blockquote=blockquote",
               link_title: false,
@@ -531,6 +556,28 @@ const AddBlogForm = () => {
               paste_data_images: true,
               file_picker_types: "image media",
               automatic_uploads: true,
+
+              // Custom button setup
+              setup: (editor: any) => {
+                // Add custom button
+                editor.ui.registry.addButton("customButton", {
+                  text: "Custom",
+                  icon: "plus",
+                  onAction: () => {
+                    // Your custom button action
+                    editor.insertContent(" Custom content inserted! ");
+                  },
+                });
+
+                // You can add more custom buttons here
+                editor.ui.registry.addButton("highlightButton", {
+                  text: "Highlight",
+                  icon: "highlight-bg-color",
+                  onAction: () => {
+                    editor.execCommand("HiliteColor", false, "#FFFF00");
+                  },
+                });
+              },
             }}
           />
         </div>
